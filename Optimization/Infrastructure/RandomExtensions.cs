@@ -8,7 +8,7 @@ namespace Optimization.Infrastructure
     {
         public static List<int> GetDistinctRandomNumbers(this Random random, int count, int minValue, int maxValue)
         {
-            if (minValue <= maxValue) throw new ArgumentException();
+            if (maxValue <= minValue) throw new ArgumentException();
             if (count >= maxValue - minValue) throw new ArgumentException();
             var result = new List<int>(count);
             for (int i = 0; i < count; i++)
