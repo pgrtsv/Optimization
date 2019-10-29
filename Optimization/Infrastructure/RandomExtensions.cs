@@ -21,5 +21,11 @@ namespace Optimization.Infrastructure
 
             return result;
         }
+
+        public static double NextDouble(this Random random, double minValue, double maxValue)
+        {
+            if (maxValue <= minValue) throw new ArgumentException();
+            return random.NextDouble() * (maxValue - minValue) + minValue;
+        }
     }
 }
