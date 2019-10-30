@@ -38,7 +38,7 @@ namespace Optimization.Interfaces
         double AccelerationTime { get; }
 
         /// <summary>
-        /// Габариты ТС (ШxДxВ).
+        /// Габариты ТС (ДxШxВ).
         /// </summary>
         (double, double, double) Dimensions { get; }
 
