@@ -17,6 +17,8 @@ namespace Optimization.Validation
                 .Must(x => x.Item3 > 0);
             RuleFor(x => x.Capacity)
                 .GreaterThan(0);
+            RuleFor(x => x.RentalPrice)
+                .GreaterThan(0);
         }
     }
 }

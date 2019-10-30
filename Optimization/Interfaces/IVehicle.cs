@@ -46,5 +46,10 @@ namespace Optimization.Interfaces
         /// Тип ТС.
         /// </summary>
         VehicleType Type { get; }
+
+        /// <summary>
+        /// Цена аренды ТС за сутки.
+        /// </summary>
+        double RentalPrice { get; }
     }
 }
