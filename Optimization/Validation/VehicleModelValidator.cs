@@ -3,11 +3,11 @@ using Optimization.Interfaces;
 
 namespace Optimization.Validation
 {
-    public class VehicleValidator : AbstractValidator<IVehicle>
+    public class VehicleModelValidator : AbstractValidator<IVehicleModel>
     {
-        public static VehicleValidator Instance { get; } = new VehicleValidator();
+        public static VehicleModelValidator Instance { get; } = new VehicleModelValidator();
 
-        public VehicleValidator()
+        public VehicleModelValidator()
         {
             RuleFor(x => x.AccelerationTime)
                 .GreaterThan(0);

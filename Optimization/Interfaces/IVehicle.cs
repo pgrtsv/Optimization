@@ -1,55 +1,20 @@
-﻿using System;
+﻿using Optimization.DailyModel;
 
 namespace Optimization.Interfaces
 {
     /// <summary>
-    /// Тип транспортного средства.
-    /// </summary>
-    [Flags]
-    public enum VehicleType
-    {
-        /// <summary>
-        /// Легковой автомобиль.
-        /// </summary>
-        Passenger,
-        /// <summary>
-        /// Лёгкий грузовик.
-        /// </summary>
-        SmallTruck,
-        /// <summary>
-        /// Грузовик.
-        /// </summary>
-        BigTruck
-    }
-
-    /// <summary>
     /// Транспортное средство.
     /// </summary>
-    public interface IVehicle
+    public interface IVehicle: IVehicleModel
     {
         /// <summary>
-        /// Вместительность (объём груза, который можно загрузить в ТС), м3.
+        /// Уникальный идентификатор транспортного средства.
         /// </summary>
-        double Capacity { get; }
+        int Id { get; }
 
         /// <summary>
-        /// Время разгона авто от 0 до 100 км/ч.
+        /// Модель транспортного средства.
         /// </summary>
-        double AccelerationTime { get; }
-
-        /// <summary>
-        /// Габариты ТС (ДxШxВ).
-        /// </summary>
-        (double, double, double) Dimensions { get; }
-
-        /// <summary>
-        /// Тип ТС.
-        /// </summary>
-        VehicleType Type { get; }
-
-        /// <summary>
-        /// Цена аренды ТС за сутки.
-        /// </summary>
-        double RentalPrice { get; }
+        VehicleModel VehicleModel { get; }
     }
 }

@@ -6,16 +6,21 @@ namespace Optimization.DailyModel
 {
     public class Vehicle: IVehicle
     {
-        public Vehicle(double capacity, double accelerationTime, (double, double, double) dimensions, VehicleType type, double rentalPrice)
+        public Vehicle(int id, VehicleModel vehicleModel)
         {
-            Capacity = capacity;
-            AccelerationTime = accelerationTime;
-            Dimensions = dimensions;
-            Type = type;
-            RentalPrice = rentalPrice;
-            VehicleValidator.Instance.ValidateAndThrow(this);
+            VehicleModelValidator.Instance.ValidateAndThrow(vehicleModel);
+
+            Id = id;
+            VehicleModel = vehicleModel;
+            Capacity = VehicleModel.Capacity;
+            AccelerationTime = VehicleModel.AccelerationTime;
+            Dimensions = VehicleModel.Dimensions;
+            Type = VehicleModel.Type;
+            RentalPrice = VehicleModel.AccelerationTime;
         }
 
+        public int Id { get; }
+        public VehicleModel VehicleModel { get; }
         public double Capacity { get; }
         public double AccelerationTime { get; }
         public (double, double, double) Dimensions { get; }
