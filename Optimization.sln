@@ -7,6 +7,8 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Optimization", "Optimizatio
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Optimization.DataGeneration", "Optimization.DataGeneration\Optimization.DataGeneration.csproj", "{45FBBA6A-E00A-419A-AF67-D8C6C5473622}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Optimization.UI", "Optimization.UI\Optimization.UI.csproj", "{C47E1C3A-49FB-4754-881E-0F2F80A62F0A}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -21,6 +23,10 @@ Global
 		{45FBBA6A-E00A-419A-AF67-D8C6C5473622}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{45FBBA6A-E00A-419A-AF67-D8C6C5473622}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{45FBBA6A-E00A-419A-AF67-D8C6C5473622}.Release|Any CPU.Build.0 = Release|Any CPU
+		{C47E1C3A-49FB-4754-881E-0F2F80A62F0A}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{C47E1C3A-49FB-4754-881E-0F2F80A62F0A}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{C47E1C3A-49FB-4754-881E-0F2F80A62F0A}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{C47E1C3A-49FB-4754-881E-0F2F80A62F0A}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
