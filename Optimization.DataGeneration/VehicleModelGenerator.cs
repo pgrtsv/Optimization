@@ -9,33 +9,33 @@ namespace Optimization.DataGeneration
     /// <summary>
     /// Класс-генератор моделей транспортных средств.
     /// </summary>
-    public static class VehicleModelGenerator
+    public class VehicleModelGenerator
     {
-        private static Random _random = new Random();
+        private readonly Random _random = new Random();
 
         /// <summary>
         /// Генерирует перечисление уникальных моделей машин.
         /// </summary>
         /// <param name="count">Количество генерируемых экземпляров.</param>
         /// <returns>Перечисление уникальных моделей машин.</returns>
-        public static IEnumerable<VehicleModel> GenerateUniqueVehicleModels(int count)
+        public IEnumerable<VehicleModel> GenerateUniqueVehicleModels(int count)
         {
             for (int i = 0; i < count; i++)
-                yield return GenerateVehicleModel();
+                yield return GenerateVehicleModel(i);
         }
 
         /// <summary>
         /// Генерирует модель транспортного средства.
         /// </summary>
         /// <returns>Экземпляр <see cref="VehicleModel"/></returns>
-        private static VehicleModel GenerateVehicleModel()
+        private VehicleModel GenerateVehicleModel(int id)
         {
             VehicleType vehicleType = (VehicleType) _random.Next(0, 2);
             var dimension = GenerateDimensions(vehicleType);
             var capacity = GenerateCapacity(vehicleType, dimension);
             var accelerationTime = GenerateAccelerationTime(vehicleType, dimension);
             var price = GeneratePrice(vehicleType, capacity, accelerationTime);
-            return new VehicleModel(capacity, accelerationTime, dimension, vehicleType, price);
+            return new VehicleModel(capacity, accelerationTime, dimension, vehicleType, price, $"Модель {id}");
         }
 
         /// <summary>
@@ -43,7 +43,7 @@ namespace Optimization.DataGeneration
         /// </summary>
         /// <param name="vehicleType">Тип транспорта.</param>
         /// <returns>Габариты транспорта (ДxШxВ - в метрах).</returns>
-        private static (double, double, double) GenerateDimensions(VehicleType vehicleType)
+        private (double, double, double) GenerateDimensions(VehicleType vehicleType)
         {
             double length, width, height;
             switch (vehicleType)
@@ -74,7 +74,7 @@ namespace Optimization.DataGeneration
         /// <param name="vehicleType">Тип транспорта.</param>
         /// <param name="dimensions">Габариты транспорта (ДxШxВ - в метрах).</param>
         /// <returns>Вместительность (объём груза, который можно загрузить в транспорт), м3.</returns>
-        private static double GenerateCapacity(VehicleType vehicleType, (double, double, double) dimensions)
+        private double GenerateCapacity(VehicleType vehicleType, (double, double, double) dimensions)
         {
             /* Размерности багажника/прицепа. */
             double width, height, length;
@@ -108,7 +108,7 @@ namespace Optimization.DataGeneration
         /// <param name="vehicleType">Тип транспорта.</param>
         /// <param name="dimensions">Габариты транспорта (ДxШxВ - в метрах).</param>
         /// <returns>Время разгона транспорта до 100 км/ч в секундах.</returns>
-        private static double GenerateAccelerationTime(VehicleType vehicleType, (double, double, double) dimensions)
+        private double GenerateAccelerationTime(VehicleType vehicleType, (double, double, double) dimensions)
         {
             double accelerationTime;
             /* Далее начисляется штраф за габариты транспорта,
@@ -143,7 +143,7 @@ namespace Optimization.DataGeneration
         /// <param name="capacity">Вместительность (объём груза, который можно загрузить в транспорт), м3.</param>
         /// <param name="accelerationTime">Время разгона транспорта до 100 км/ч в секундах.</param>
         /// <returns>Цена аренды транспорта (в рублях) за сутки.</returns>
-        private static double GeneratePrice(VehicleType vehicleType, double capacity, double accelerationTime)
+        private double GeneratePrice(VehicleType vehicleType, double capacity, double accelerationTime)
         {
             /* Далее будут учтены габариты транспорта и время разгона,
              * так что порог генерации - занижен. */
@@ -171,7 +171,7 @@ namespace Optimization.DataGeneration
             return price + dimensionAddition + accelerationAddition;
         }
 
-        private static double GenerateAndRound(double min, double max, int precision = 1)
+        private double GenerateAndRound(double min, double max, int precision = 1)
         {
             return Math.Round(_random.NextDouble(min, max), precision, MidpointRounding.AwayFromZero);
         }

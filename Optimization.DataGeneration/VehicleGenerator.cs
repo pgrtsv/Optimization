@@ -7,20 +7,20 @@ using Optimization.Infrastructure;
 namespace Optimization.DataGeneration
 {
     /// <summary>
-    /// Класс-генератор транспортных средств.
+    /// Генератор транспортных средств.
     /// </summary>
-    public static class VehicleGenerator
+    public class VehicleGenerator
     {
-        private static Random _random = new Random();
-
-        public static IEnumerable<Vehicle> GenerateUniqueVehicles(int count, IList<VehicleModel> vehicleModels)
+        public IEnumerable<Vehicle> GenerateUniqueVehicles(int count, IList<VehicleModel> vehicleModels)
         {
             if(count <= 0) throw new ArgumentException();
 
+            var random = new Random();
+
             for (int i = 0; i < count; i++)
             {
-                var vehicleModel = _random.GetRandomFrom(vehicleModels, 1).First();
-                yield return new Vehicle(i, vehicleModel);
+                var vehicleModel = random.GetRandomFrom(vehicleModels, 1).First();
+                yield return new Vehicle(i, vehicleModel, $"Модель {i}");
             }
         }
     }

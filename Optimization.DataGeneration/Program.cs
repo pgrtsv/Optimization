@@ -15,8 +15,8 @@ namespace Optimization.DataGeneration
 
         static void Main(string[] args)
         {
-            var vehicleModels = VehicleModelGenerator.GenerateUniqueVehicleModels(50).ToList();
-            var vehicles = VehicleGenerator.GenerateUniqueVehicles(1000, vehicleModels).ToList();
+            var vehicleModels = new VehicleModelGenerator().GenerateUniqueVehicleModels(50).ToList();
+            var vehicles = new VehicleGenerator().GenerateUniqueVehicles(1000, vehicleModels).ToList();
             var goods = new Goods(GoodGenerator.GenerateUniqueGoods(100).Cast<IGood>().ToList());
             var cityMap = new CityMapGenerator().Generate(goods);
 

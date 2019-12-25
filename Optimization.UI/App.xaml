@@ -6,8 +6,71 @@
         <local:ViewLocator/>
     </Application.DataTemplates>
 
+    <Application.Resources>
+      <SolidColorBrush x:Key="BackgroundAccentBrush1" Color="#ff6f00" />
+      <SolidColorBrush x:Key="ForegroundAccentBrush1" Color="#ffffff" />
+      <SolidColorBrush x:Key="BackgroundAccentBrush2" Color="#e65100" />
+    </Application.Resources>
+    
     <Application.Styles>
         <StyleInclude Source="avares://Avalonia.Themes.Default/DefaultTheme.xaml"/>
         <StyleInclude Source="avares://Avalonia.Themes.Default/Accents/BaseLight.xaml"/>
+        <StyleInclude Source="resm:Avalonia.Controls.DataGrid.Themes.Default.xaml?assembly=Avalonia.Controls.DataGrid"/>
+      
+        <Style Selector="TabControl">
+          <Setter Property="Background" Value="#ffffff" />
+        </Style>
+        <Style Selector="TabControl[TabStripPlacement=Top]">
+          <Setter Property="Padding" Value="0 0 0 0"/>
+        </Style>
+        <Style Selector="TabControl WrapPanel">
+          <Setter Property="Background" Value="#212121" />
+        </Style>
+        <Style Selector="TabItem">
+          <Setter Property="Padding" Value="6" />
+          <Setter Property="Height" Value="40" />
+          <Setter Property="Foreground" Value="#ffffff" />
+        </Style>
+          <Style Selector="TabItem:pointerover /template/ ContentPresenter#PART_ContentPresenter">
+          <Setter Property="Background" Value="#ff8f00"/>
+        </Style>
+        <Style Selector="TabItem:selected /template/ ContentPresenter#PART_ContentPresenter">
+          <Setter Property="Background" Value="{DynamicResource BackgroundAccentBrush1}"/>
+        </Style>
+        <Style Selector="TabItem TextBlock">
+          <Setter Property="FontSize" Value="20" />
+        </Style>
+        <Style Selector="TabItem:selected TextBlock">
+          <Setter Property="FontWeight" Value="Medium" />
+        </Style>
+        <Style Selector="DataGrid">
+          <Setter Property="FontSize" Value="16" />
+          <Setter Property="BorderThickness" Value="0" />
+          <Setter Property="RowBackground" Value="#f5f5f5" />
+          <Setter Property="AlternatingRowBackground" Value="#c2c2c2" />
+          <Setter Property="Foreground" Value="#000000" />
+          <Setter Property="Padding" Value="6" />
+        </Style>
+        <Style Selector="DataGridColumnHeader">
+          <Setter Property="Background" Value="#ef5350" />
+          <Setter Property="Foreground" Value="#ffffff" />
+        </Style>
+        <Style Selector="DataGridColumnHeader:pointerover">
+          <Setter Property="Background" Value="#b61827" />
+        </Style>
+        <Style Selector="DataGridCell TextBlock">
+          <Setter Property="FontSize" Value="16" />
+        </Style>
+        <Style Selector="DataGridCell TextBox">
+          <Setter Property="FontSize" Value="16" />
+          <Setter Property="VerticalAlignment" Value="Center" />
+          <Setter Property="BorderThickness" Value="0" />
+        </Style>
+        <Style Selector="DataGridRow:pointerover">
+          <Setter Property="Background" Value="#b61827" />
+        </Style>
+        <Style Selector="ComboBox Border">
+          <Setter Property="CornerRadius" Value="2" />
+        </Style>
     </Application.Styles>
 </Application>

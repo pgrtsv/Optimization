@@ -20,8 +20,8 @@ namespace Optimization.UI.ViewModels
         {
             Goods = new Goods(GoodGenerator.GenerateUniqueGoods(50).Cast<IGood>().ToList());
             CityMap = new CityMapGenerator().Generate(Goods);
-            VehicleModels = new ObservableCollection<VehicleModel>(VehicleModelGenerator.GenerateUniqueVehicleModels(20));
-            Vehicles = new ObservableCollection<Vehicle>(VehicleGenerator.GenerateUniqueVehicles(50, VehicleModels));
+            VehicleModels = new ObservableCollection<VehicleModel>(new VehicleModelGenerator().GenerateUniqueVehicleModels(20));
+            Vehicles = new ObservableCollection<Vehicle>(new VehicleGenerator().GenerateUniqueVehicles(50, VehicleModels));
         }
     }
 }

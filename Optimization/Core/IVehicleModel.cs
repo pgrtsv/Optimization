@@ -28,6 +28,11 @@ namespace Optimization.Core
     public interface IVehicleModel
     {
         /// <summary>
+        /// Название модели.
+        /// </summary>
+        string Name { get; }
+
+        /// <summary>
         /// Вместительность (объём груза, который можно загрузить в ТС), м3.
         /// </summary>
         double Capacity { get; }
