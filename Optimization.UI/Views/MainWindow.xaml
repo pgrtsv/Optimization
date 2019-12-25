@@ -4,6 +4,7 @@
         xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
         xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
         xmlns:controls="clr-namespace:Optimization.UI.Controls;assembly=Optimization.UI"
+        xmlns:dailyModel="clr-namespace:Optimization.DailyModel;assembly=Optimization"
         mc:Ignorable="d" d:DesignWidth="800" d:DesignHeight="450"
         x:Class="Optimization.UI.Views.MainWindow"
         Icon="/Assets/avalonia-logo.ico"
@@ -13,6 +14,62 @@
         <vm:MainWindowViewModel/>
     </Design.DataContext>
 
-    <controls:Map x:Name="Map" />
+    <TabControl>
+        <TabItem Header="Товары">
+            <ListBox x:Name="GoodsListBox">
+                <ListBox.ItemTemplate>
+                    <DataTemplate DataType="dailyModel:Good">
+                        <Grid>
+                            <Grid.ColumnDefinitions>
+                                <ColumnDefinition Width="*" />
+                                <ColumnDefinition Width="Auto" SharedSizeGroup="Price" />
+                                <ColumnDefinition Width="Auto" SharedSizeGroup="Volume" />
+                            </Grid.ColumnDefinitions>
+                            <TextBlock Text="{Binding Name}" Margin="2" />
+                            <TextBlock Grid.Column="1" Text="{Binding Price}" Margin="5" />
+                            <TextBlock Grid.Column="2" Text="{Binding Volume}" Margin="5" />
+                        </Grid>
+                    </DataTemplate>
+                </ListBox.ItemTemplate>
+            </ListBox>
+        </TabItem>
+        <TabItem Header="Модели авто">
+            <ListBox x:Name="VehicleModelsListBox"></ListBox>
+        </TabItem>
+        <TabItem Header="Авто">
+            <ListBox x:Name="VehiclesListBox">
+                <ListBox.ItemTemplate>
+                    <DataTemplate DataType="dailyModel:Vehicle">
+                        <Grid>
+                            <Grid.Styles>
+                                <Style Selector="TextBlock">
+                                    <Setter Property="Margin" Value="5" />
+                                </Style>
+                            </Grid.Styles>
+                            <Grid.ColumnDefinitions>
+                                <ColumnDefinition Width="Auto" SharedSizeGroup="Id" />
+                                <ColumnDefinition Width="Auto" SharedSizeGroup="Type" />
+                                <ColumnDefinition Width="Auto" SharedSizeGroup="VehicleModel" />
+                                <ColumnDefinition Width="Auto" SharedSizeGroup="AccelerationTime" />
+                                <ColumnDefinition Width="Auto" SharedSizeGroup="Capacity" />
+                                <ColumnDefinition Width="Auto" SharedSizeGroup="Dimensions" />
+                                <ColumnDefinition Width="Auto" SharedSizeGroup="RentalPrice" />
+                            </Grid.ColumnDefinitions>
+                            <TextBlock Text="{Binding Id}" />
+                            <TextBlock Grid.Column="1" Text="{Binding Type}" />
+                            <TextBlock Grid.Column="2" Text="{Binding VehicleModel}" />
+                            <TextBlock Grid.Column="3" Text="{Binding AccelerationTime}" />
+                            <TextBlock Grid.Column="4" Text="{Binding Capacity}" />
+                            <TextBlock Grid.Column="5" Text="{Binding Dimensions}" />
+                            <TextBlock Grid.Column="6" Text="{Binding RentalPrice}" />
+                        </Grid>
+                    </DataTemplate>
+                </ListBox.ItemTemplate>
+            </ListBox>
+        </TabItem>
+        <TabItem Header="Карта">
+            <controls:Map x:Name="Map" />
+        </TabItem>
+    </TabControl>
 
 </Window>
