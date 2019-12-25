@@ -28,6 +28,10 @@ namespace Optimization.UI.Controls
                 if (CityMap == null) return;
                 foreach (var cityRoad in CityMap.Roads) Children.Add(CreateElementForRoad(cityRoad));
                 foreach (var cityPlace in CityMap.Places) Children.Add(CreateElementForPlace(cityPlace));
+                RenderTransform = new TransformGroup
+                {
+                    Children = new Transforms {new TranslateTransform(500, 500), new ScaleTransform(0.5, 0.5)}
+                };
             });
             this.WhenAnyValue(x => x.CityMap)
                 .Subscribe(x => DrawCommand.Execute(null));
@@ -65,20 +69,21 @@ namespace Optimization.UI.Controls
                 ZIndex = 1,
                 StrokeThickness = 3
             };
-            switch (cityRoad.Usage)
+            switch (cityRoad.Rank)
             {
-                case RoadUsage.High:
+                case RoadRank.High:
                     line.Stroke = Brushes.Red;
                     break;
-                case RoadUsage.Medium:
+                case RoadRank.Medium:
                     line.Stroke = Brushes.Yellow;
                     break;
-                case RoadUsage.Low:
+                case RoadRank.Low:
                     line.Stroke = Brushes.Green;
                     break;
                 default:
                     throw new ArgumentOutOfRangeException();
             }
+
             return line;
         }
     }

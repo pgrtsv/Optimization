@@ -1,12 +1,12 @@
 ﻿namespace Optimization.Core
 {
     /// <summary>
-    /// Ситуация на дороге.
+    /// Ранг (популярность) дороги.
     /// </summary>
-    public enum RoadUsage
+    public enum RoadRank
     {
         /// <summary>
-        /// Пробки.
+        /// Важная дорога.
         /// </summary>
         High,
 
@@ -44,6 +44,6 @@
         /// <summary>
         /// Ситуация на дороге.
         /// </summary>
-        RoadUsage Usage { get; }
+        RoadRank Rank { get; }
     }
 }
