@@ -1,6 +1,6 @@
 ﻿using Optimization.DailyModel;
 
-namespace Optimization.Interfaces
+namespace Optimization.Core
 {
     /// <summary>
     /// Транспортное средство.

@@ -1,8 +1,8 @@
 ﻿using System;
 using System.Collections.Generic;
+using Optimization.Core;
 using Optimization.DailyModel;
 using Optimization.Infrastructure;
-using Optimization.Interfaces;
 
 namespace Optimization.DataGeneration
 {

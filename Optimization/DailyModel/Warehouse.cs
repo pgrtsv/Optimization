@@ -1,14 +1,14 @@
-﻿using Optimization.Interfaces;
+﻿using Optimization.Core;
 
 namespace Optimization.DailyModel
 {
     public class Warehouse: IWarehouse
     {
-        public Warehouse((double, double) coordinates)
+        public Warehouse(Coordinate coordinates)
         {
             Coordinates = coordinates;
         }
 
-        public (double, double) Coordinates { get; }
+        public Coordinate Coordinates { get; }
     }
 }

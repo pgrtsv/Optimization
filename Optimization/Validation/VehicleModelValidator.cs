@@ -1,5 +1,5 @@
 ﻿using FluentValidation;
-using Optimization.Interfaces;
+using Optimization.Core;
 
 namespace Optimization.Validation
 {

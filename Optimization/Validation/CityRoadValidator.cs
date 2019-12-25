@@ -1,5 +1,5 @@
 ﻿using FluentValidation;
-using Optimization.Interfaces;
+using Optimization.Core;
 
 namespace Optimization.Validation
 {
@@ -8,8 +8,8 @@ namespace Optimization.Validation
         public static CityRoadValidator Instance { get; } = new CityRoadValidator();
         public CityRoadValidator()
         {
-            RuleFor(x => x.Distance)
-                .GreaterThan(0);
+            RuleFor(x => x)
+                .Must(x => x.GetDistance() > 0);
             RuleFor(x => x.FirstPlace)
                 .NotNull()
                 .NotEqual(x => x.SecondPlace);

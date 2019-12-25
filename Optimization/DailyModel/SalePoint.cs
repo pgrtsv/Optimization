@@ -1,7 +1,7 @@
 ﻿using System;
 using System.Linq;
+using Optimization.Core;
 using Optimization.Infrastructure;
-using Optimization.Interfaces;
 
 namespace Optimization.DailyModel
 {
@@ -13,7 +13,7 @@ namespace Optimization.DailyModel
         private readonly Random _random = new Random();
 
         public SalePoint(
-            (double, double) coordinates, 
+            Coordinate coordinates, 
             VehicleType acceptableVehicleTypes,
             IGoods goods)
         {
@@ -22,7 +22,7 @@ namespace Optimization.DailyModel
             AcceptableVehicleTypes = acceptableVehicleTypes;
         }
 
-        public (double, double) Coordinates { get; }
+        public Coordinate Coordinates { get; }
         public VehicleType AcceptableVehicleTypes { get; }
 
         /// <summary>

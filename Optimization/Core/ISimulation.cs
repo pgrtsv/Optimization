@@ -1,4 +1,4 @@
-﻿namespace Optimization.Interfaces
+﻿namespace Optimization.Core
 {
     public interface ISimulation
     {

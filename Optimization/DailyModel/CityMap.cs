@@ -1,6 +1,6 @@
 ﻿using System.Collections.Generic;
 using FluentValidation;
-using Optimization.Interfaces;
+using Optimization.Core;
 using Optimization.Validation;
 
 namespace Optimization.DailyModel

@@ -1,4 +1,4 @@
-﻿namespace Optimization.Interfaces
+﻿namespace Optimization.Core
 {
     /// <summary>
     /// Ситуация на дороге.
@@ -39,7 +39,7 @@
         /// <summary>
         /// Длина дороги.
         /// </summary>
-        double Distance { get; }
+        double GetDistance();
 
         /// <summary>
         /// Ситуация на дороге.

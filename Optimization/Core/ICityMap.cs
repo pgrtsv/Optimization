@@ -1,6 +1,6 @@
 ﻿using System.Collections.Generic;
 
-namespace Optimization.Interfaces
+namespace Optimization.Core
 {
     /// <summary>
     /// Дорожная карта города.

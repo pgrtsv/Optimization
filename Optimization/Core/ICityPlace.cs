@@ -1,4 +1,4 @@
-﻿namespace Optimization.Interfaces
+﻿namespace Optimization.Core
 {
     /// <summary>
     /// Место в городе.
@@ -8,6 +8,6 @@
         /// <summary>
         /// Координаты (X, Y) места.
         /// </summary>
-        (double, double) Coordinates { get; }
+        Coordinate Coordinates { get; }
     }
 }

@@ -1,11 +1,17 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Text;
+using DynamicData;
+using Optimization.Core;
 
 namespace Optimization.UI.ViewModels
 {
     public class MainWindowViewModel : ViewModelBase
     {
-        public string Greeting => "Welcome to Avalonia!";
+        private SourceList<ICityPlace> _cityPlaces;
+
+        public MainWindowViewModel()
+        {
+        }
     }
 }

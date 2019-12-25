@@ -1,6 +1,6 @@
 ﻿using System;
 
-namespace Optimization.Interfaces
+namespace Optimization.Core
 {
     /// <summary>
     /// Тип транспортного средства.

@@ -1,6 +1,6 @@
 ﻿using System.Collections.Generic;
 
-namespace Optimization.Interfaces
+namespace Optimization.Core
 {
     /// <summary>
     /// Заказ складу от точки сбыта.

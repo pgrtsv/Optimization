@@ -1,6 +1,4 @@
-﻿using System.Collections.Generic;
-
-namespace Optimization.Interfaces
+﻿namespace Optimization.Core
 {
     /// <summary>
     /// Точка сбыта.
