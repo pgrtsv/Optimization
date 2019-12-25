@@ -18,9 +18,7 @@ namespace Optimization.UI.Views
             this.AttachDevTools();
 #endif
             ViewModel = (MainWindowViewModel) DataContext;
-            this.WhenActivated(disposables =>
-            {
-            });
+            this.WhenActivated(disposables => { this.OneWayBind(ViewModel, x => x.CityMap, x => x.Map.CityMap); });
         }
 
         private void InitializeComponent()

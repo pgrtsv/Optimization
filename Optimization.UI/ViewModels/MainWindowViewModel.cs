@@ -1,17 +1,20 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Text;
-using DynamicData;
+﻿using System.Linq;
 using Optimization.Core;
+using Optimization.DailyModel;
+using Optimization.DataGeneration;
 
 namespace Optimization.UI.ViewModels
 {
     public class MainWindowViewModel : ViewModelBase
     {
-        private SourceList<ICityPlace> _cityPlaces;
+        public CityMap CityMap { get; }
+
+        public Goods Goods { get; }
 
         public MainWindowViewModel()
         {
+            Goods = new Goods(GoodGenerator.GenerateUniqueGoods(50).Cast<IGood>().ToList());
+            CityMap = new CityMapGenerator().Generate(Goods);
         }
     }
 }

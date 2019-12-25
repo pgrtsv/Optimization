@@ -1,43 +1,42 @@
-﻿using System.Collections.Generic;
-using System.Collections.ObjectModel;
+﻿using System;
 using System.Windows.Input;
 using Avalonia;
 using Avalonia.Controls;
 using Avalonia.Controls.Shapes;
 using Avalonia.Media;
 using Optimization.Core;
+using Optimization.DailyModel;
 using ReactiveUI;
 
 namespace Optimization.UI.Controls
 {
-    public class Map: Canvas
+    public class Map : Canvas
     {
-        public static readonly AvaloniaProperty<ReadOnlyObservableCollection<ICityPlace>> PlacesProperty =
-            AvaloniaProperty.RegisterDirect<Map, ReadOnlyObservableCollection<ICityPlace>>(
-                nameof(Places),
-                x => x.Places,
-                (x, value) => x.Places = value);
+        public static readonly AvaloniaProperty<ICityMap> CityMapProperty =
+            AvaloniaProperty.RegisterDirect<Map, ICityMap>(
+                nameof(CityMap),
+                x => x.CityMap,
+                (x, value) => x.CityMap = value);
 
-        private ReadOnlyObservableCollection<ICityPlace> _places;
+        private ICityMap _cityMap;
 
         public Map()
         {
             DrawCommand = ReactiveCommand.Create(() =>
             {
                 Children.Clear();
-                foreach (var cityPlace in Places)
-                {
-                    Children.Add(CreateElementForPlace(cityPlace));
-                }
+                if (CityMap == null) return;
+                foreach (var cityRoad in CityMap.Roads) Children.Add(CreateElementForRoad(cityRoad));
+                foreach (var cityPlace in CityMap.Places) Children.Add(CreateElementForPlace(cityPlace));
             });
-            this.WhenAnyValue(x => x.Places)
-                .InvokeCommand(DrawCommand);
+            this.WhenAnyValue(x => x.CityMap)
+                .Subscribe(x => DrawCommand.Execute(null));
         }
 
-        public ReadOnlyObservableCollection<ICityPlace> Places
+        public ICityMap CityMap
         {
-            get => _places;
-            set => SetAndRaise(PlacesProperty, ref _places, value);
+            get => _cityMap;
+            set => SetAndRaise(CityMapProperty, ref _cityMap, value);
         }
 
         public ICommand DrawCommand { get; }
@@ -45,10 +44,42 @@ namespace Optimization.UI.Controls
 
         public Control CreateElementForPlace(ICityPlace cityPlace)
         {
-            var ellipse = new Ellipse {Width = 10, Height = 10, Fill = Brushes.Red};
-            SetLeft(ellipse, cityPlace.Coordinates.X);
-            SetTop(ellipse, cityPlace.Coordinates.Y);
+            var ellipse = new Ellipse {Width = 10, Height = 10, ZIndex = 2};
+            if (cityPlace is Warehouse)
+                ellipse.Fill = Brushes.Blue;
+            else if (cityPlace is SalePoint)
+                ellipse.Fill = Brushes.Brown;
+            else
+                ellipse.Fill = Brushes.Black;
+            SetLeft(ellipse, cityPlace.Coordinates.X - 5);
+            SetTop(ellipse, cityPlace.Coordinates.Y - 5);
             return ellipse;
+        }
+
+        public Control CreateElementForRoad(ICityRoad cityRoad)
+        {
+            var line = new Line
+            {
+                StartPoint = new Point(cityRoad.FirstPlace.Coordinates.X, cityRoad.FirstPlace.Coordinates.Y),
+                EndPoint = new Point(cityRoad.SecondPlace.Coordinates.X, cityRoad.SecondPlace.Coordinates.Y),
+                ZIndex = 1,
+                StrokeThickness = 3
+            };
+            switch (cityRoad.Usage)
+            {
+                case RoadUsage.High:
+                    line.Stroke = Brushes.Red;
+                    break;
+                case RoadUsage.Medium:
+                    line.Stroke = Brushes.Yellow;
+                    break;
+                case RoadUsage.Low:
+                    line.Stroke = Brushes.Green;
+                    break;
+                default:
+                    throw new ArgumentOutOfRangeException();
+            }
+            return line;
         }
     }
 }
