@@ -19,22 +19,22 @@ namespace Optimization.DataGeneration
          * Подразумивается, что элементы следует от меньшего товара к большему (по размеру). */
 
         /// <summary>
-        /// Массив устанавливает вес на генерации товара определенного размера/цены.
+        /// Массив весов для генерации товара определенного размера/цены.
         /// </summary>
         private static readonly int[] GoodGenerationWeights = { 80, 15, 5 };
 
         /// <summary>
-        /// Массив устанавливает границы объема товаров.
+        /// Массив устанавливает границы объема товаров соответсвующие весам <see cref="GoodGenerationWeights"/>.
         /// </summary>
         private static readonly (double, double)[] VolumeGenerationBorders = 
             {(0.0001, 0.004), (0.004, 0.5), (0.5, 3)};
 
         /// <summary>
-        /// Массив устанавливает границы цены товаров разного объема (большие по объему - стоят больше).
+        /// Массив устанавливает границы цены товаров соответсвующие весам <see cref="GoodGenerationWeights"/>.
         /// </summary>
         private static readonly (int, int)[] PriceGenerationBorders = 
             {(10, 500), (500, 10000), (7000, 100000)};
-        /* Заметка по границам товаров, я понимаю, что какое-нибудь маленькое кольцо может стоить
+        /* Заметка по границам товаров, я понимаю, что какое-нибудь маленькое ювелирное изделие может стоить
          * больше громадного холодильника, но для простоты решил так: чем больше товар, тем больше цена. */
 
         /* В целом, решение с массивами – грязное, возможно, что-то более
@@ -70,21 +70,12 @@ namespace Optimization.DataGeneration
                || GoodGenerationWeights.Length != PriceGenerationBorders.Length)
                 throw new Exception();
             
-            /* Генерируем "класс" товара, по сути индекс в массивах выше. */
-            var goodClassIndex = 0;
-            var randomValue = _random.Next(0, GoodGenerationWeights.Sum());
-            var rightBorder = GoodGenerationWeights[0];
-            for (int i = 0; i < GoodGenerationWeights.Length - 1; i++)
-            {
-                goodClassIndex = i;
-                if(randomValue < rightBorder) break;
-                rightBorder += GoodGenerationWeights[i + 1];
-            }
+            var weightIndex = _random.GetWeightIndexFrom(GoodGenerationWeights);
             
-            var (minVolume, maxVolume) = VolumeGenerationBorders[goodClassIndex];
+            var (minVolume, maxVolume) = VolumeGenerationBorders[weightIndex];
             var volume = Math.Round(_random.NextDouble(minVolume, maxVolume), 4);
 
-            var (minPrice, maxPrice) = PriceGenerationBorders[goodClassIndex];
+            var (minPrice, maxPrice) = PriceGenerationBorders[weightIndex];
             var price = _random.Next(minPrice, maxPrice);
 
             return (volume, price);
