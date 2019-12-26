@@ -6,6 +6,7 @@
         xmlns:controls="clr-namespace:Optimization.UI.Controls;assembly=Optimization.UI"
         xmlns:dailyModel="clr-namespace:Optimization.DailyModel;assembly=Optimization"
         mc:Ignorable="d" d:DesignWidth="800" d:DesignHeight="450"
+        xmlns:sys="clr-namespace:System;assembly=mscorlib"
         x:Class="Optimization.UI.Views.MainWindow"
         Icon="/Assets/avalonia-logo.ico"
         Title="Optimization.UI">
@@ -21,8 +22,8 @@
                    IsReadOnly="True">
             <DataGrid.Columns>
               <DataGridTextColumn Header="Название" Binding="{Binding Name}" />
-              <DataGridTextColumn Header="Цена" Binding="{Binding Price}" />
-              <DataGridTextColumn Header="Объём" Binding="{Binding Volume}" />
+              <DataGridTextColumn Header="Цена, руб." Binding="{Binding Price}" />
+              <DataGridTextColumn Header="Объём, м3" Binding="{Binding Volume}" />
             </DataGrid.Columns>
           </DataGrid>
         </TabItem>
@@ -41,7 +42,24 @@
           </DataGrid>
         </TabItem>
         <TabItem Header="Карта">
-          <controls:Map x:Name="Map" />
+          <DockPanel>
+            <Menu DockPanel.Dock="Top" Height="45">
+              <Menu.Styles>
+                <Style Selector="ComboBox ContentControl">
+                  <Setter Property="Foreground" Value="{DynamicResource ForegroundAccentBrush1}" />
+                </Style>
+              </Menu.Styles>
+              <ComboBox x:Name="SimulationTimeComboBox" MinWidth="100"
+                        Items="{Binding AvailableSimulationTimes}"
+                        Height="40"/>
+              <MenuItem Header="Запустить" x:Name="StartSimulationMenuItem"
+                        Foreground="{DynamicResource ForegroundAccentBrush1}" />
+              <MenuItem Header="Остановить" x:Name="StopSimulationMenuItem" 
+                        Foreground="{DynamicResource ForegroundAccentBrush1}" />
+            </Menu>
+            <TextBlock x:Name="SimulationDateTimeTextBlock" DockPanel.Dock="Bottom" />
+            <controls:Map x:Name="Map" />
+          </DockPanel>
         </TabItem>
     </TabControl>
 
