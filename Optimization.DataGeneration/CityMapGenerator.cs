@@ -71,7 +71,7 @@ namespace Optimization.DataGeneration
             var roads = new HashSet<CityRoad>();
             for (var i = 1; i < randomizedCityPlaces.Count; i++)
                 roads.Add(new CityRoad(randomizedCityPlaces[i - 1], randomizedCityPlaces[i],
-                    random.NextDouble() < 0.5 ? RoadUsage.Medium : RoadUsage.High));
+                    random.NextDouble() < 0.5 ? RoadRank.Medium : RoadRank.High));
             for (var i = 0; i < 3; i++)
             for (int j = 0, jEnd = random.Next(0, randomizedCityPlaces.Count); j < jEnd; j++)
             {
