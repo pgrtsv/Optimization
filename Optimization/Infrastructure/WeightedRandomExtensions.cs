@@ -9,6 +9,37 @@ namespace Optimization.Infrastructure
     /// </summary>
     public static class WeightedRandomExtensions
     {
+        public static bool NextBool(this Random random, int trueWeight, int falseWeight)
+        {
+            var randomValue = random.Next(trueWeight + falseWeight);
+            return randomValue < trueWeight;
+        }
+
+        /// <summary>
+        /// Генерирует случайный диапазон.
+        /// </summary>
+        /// <param name="random"><see cref="Random"/>.</param>
+        /// <param name="minValue">Минимальное значение диапазона.</param>
+        /// <param name="maxValue">Максимальное значение диапазона.</param>
+        /// <param name="weights">Массив весов.</param>
+        /// <returns>Случайный диапазон.</returns>
+        public static (int, int) NextIntRange(this Random random, int minValue, int maxValue,
+            int[] weights)
+        {
+            var weightRangeIndex = random.GetWeightIndexFrom(weights);
+
+            /* Находим границы диапазона возможных чисел, относящихся к текущему весу. */
+            var valueOnWeightUnit = (maxValue - minValue) / weights.Sum();
+            var minOfRange = minValue;
+            if (weightRangeIndex != 0)
+                for (int i = 0; i < weightRangeIndex; i++)
+                    minOfRange += weights[i] * valueOnWeightUnit;
+            var maxOfRange =
+                minOfRange + weights[weightRangeIndex] * valueOnWeightUnit;
+
+            return (minOfRange, maxOfRange);
+        }
+
         /// <summary>
         /// Возвращает индекс случайно выбранного веса.
         /// Чем больше вес, тем больше вероятность возвращения его индекса.
