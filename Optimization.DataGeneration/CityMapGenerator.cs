@@ -82,7 +82,7 @@ namespace Optimization.DataGeneration
                 var road = new CityRoad(
                     firstPlace,
                     secondPlace,
-                    random.NextDouble() < 0.5 ? RoadUsage.Low : RoadUsage.Medium);
+                    random.NextDouble() < 0.5 ? RoadRank.Low : RoadRank.Medium);
                 if (roads.Any(x => x.FirstPlace.Equals(road.FirstPlace) && x.SecondPlace.Equals(road.SecondPlace)))
                     continue;
                 roads.Add(road);

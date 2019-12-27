@@ -46,7 +46,6 @@ namespace Optimization.DailyModel
         /// <summary>
         /// Генерирует заказ.
         /// </summary>
-        /// TODO: придумать правило генерации количества товара. 
         public IOrder GenerateOrder()
         {
             var neededGoods = new Dictionary<IGood, int>();
