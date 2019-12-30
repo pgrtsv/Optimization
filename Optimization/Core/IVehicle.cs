@@ -1,4 +1,5 @@
-﻿using Optimization.DailyModel;
+﻿using System;
+using Optimization.DailyModel;
 
 namespace Optimization.Core
 {
@@ -16,5 +17,17 @@ namespace Optimization.Core
         /// Модель транспортного средства.
         /// </summary>
         VehicleModel VehicleModel { get; }
+
+        /// <summary>
+        /// Позиция ТС.
+        /// </summary>
+        Coordinate Position { get; }
+
+        /// <summary>
+        /// Двигается по маршруту <see cref="route"/> в течение времени <see cref="TimeSpan"/>.
+        /// </summary>
+        /// <param name="route">Маршрут.</param>
+        /// <param name="timeSpan">Время движения.</param>
+        void Move(IRoute route, TimeSpan timeSpan);
     }
 }

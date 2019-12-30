@@ -64,6 +64,7 @@ namespace Optimization.DataGeneration
             }).ToHashSet();
         }
 
+        // TODO: переделать генерацию дорог на более красивую (с непересекающимися ребрами графа).
         private HashSet<CityRoad> GenerateCityRoads(ICollection<ICityPlace> cityPlaces)
         {
             var random = new Random();
