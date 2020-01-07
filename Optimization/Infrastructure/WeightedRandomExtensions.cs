@@ -29,15 +29,11 @@ namespace Optimization.Infrastructure
             var weightRangeIndex = random.GetWeightIndexFrom(weights);
 
             /* Находим границы диапазона возможных чисел, относящихся к текущему весу. */
-            var valueOnWeightUnit = (maxValue - minValue) / weights.Sum();
-            var minOfRange = minValue;
-            if (weightRangeIndex != 0)
-                for (int i = 0; i < weightRangeIndex; i++)
-                    minOfRange += weights[i] * valueOnWeightUnit;
-            var maxOfRange =
-                minOfRange + weights[weightRangeIndex] * valueOnWeightUnit;
+            var valueOnWeightRange = (double) (maxValue - minValue) / weights.Length;
+            var minOfRange = minValue + weightRangeIndex * valueOnWeightRange;
+            var maxOfRange = minOfRange + valueOnWeightRange;
 
-            return (minOfRange, maxOfRange);
+            return ((int) minOfRange, (int) maxOfRange);
         }
 
         /// <summary>
@@ -56,13 +52,13 @@ namespace Optimization.Infrastructure
 
             var totalWeight = weights.Sum();
             var randomFromWeights = random.Next(0, totalWeight);
-            var rightWeightBorder = weights[0];
             var weightIndex = 0;
-            for (int i = 0; i < weights.Length - 1; i++)
+            var rightWeightBorder = 0;
+            for (int i = 0; i < weights.Length; i++)
             {
+                rightWeightBorder += weights[i];
                 weightIndex = i;
                 if (randomFromWeights < rightWeightBorder) break;
-                rightWeightBorder += weights[i + 1];
             }
 
             return weightIndex;
