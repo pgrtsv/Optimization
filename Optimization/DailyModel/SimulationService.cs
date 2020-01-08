@@ -1,11 +1,13 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.ComponentModel;
+using System.Diagnostics;
 using System.Linq;
-using System.Reactive.Concurrency;
-using System.Reactive.Disposables;
 using System.Reactive.Linq;
+using System.Reactive.Subjects;
+using System.Threading;
 using Optimization.Core;
+using Optimization.DataGeneration;
 using ReactiveUI;
 using ReactiveUI.Fody.Helpers;
 
@@ -38,40 +40,27 @@ namespace Optimization.DailyModel
 
     public class SimulationService : ReactiveObject, IDisposable
     {
-        private readonly IDisposable _cleanUp;
+        private readonly List<VehicleModel> _availableVehicleModels;
         private double _timeModifier;
+        private readonly Subject<DateTime> _interval = new Subject<DateTime>();
+        private IDisposable _currentTimer;
 
-        public SimulationService(ICityMap cityMap)
+        public SimulationService(ICityMap cityMap, IEnumerable<VehicleModel> availableVehicleModels)
         {
+            CityMap = cityMap;
+            _availableVehicleModels = availableVehicleModels.ToList();
             TimeModifier = 60;
             CurrentDateTime = DateTime.Now;
-            RoadsUsage = cityMap.Roads.Select(x => new CityRoadUsage(x, GenerateRoadUsage(CurrentDateTime, x))).ToList();
-
-            var roadUsageBinding = this.WhenAnyValue(x => x.CurrentDateTime)
-                .Subscribe(dateTime =>
-                {
-                    foreach (var roadUsage in RoadsUsage)
-                        roadUsage.Usage = GenerateRoadUsage(dateTime, roadUsage.Road);
-                });
-            Interval = Observable.Generate(
-                this,
-                x => x.IsRunning,
-                x =>
-                {
-                    CurrentDateTime += TimeSpan.FromMinutes(1);
-                    return x;
-                },
-                x => x.CurrentDateTime,
-                x => TimeSpan.FromMinutes(1.0 / TimeModifier),
-                RxApp.MainThreadScheduler);
-            _cleanUp = Disposable.Create(() => { roadUsageBinding.Dispose(); });
         }
+
+        public ICityMap CityMap { get; }
+
+        public IReadOnlyCollection<IVehicleModel> AvailableVehicleModels => _availableVehicleModels;
 
         [Reactive] public bool IsRunning { get; private set; }
 
-        public IObservable<DateTime> Interval { get; }
+        public IObservable<DateTime> Interval => _interval;
 
-        [Reactive]
         public double TimeModifier
         {
             get => _timeModifier;
@@ -80,70 +69,52 @@ namespace Optimization.DailyModel
                 if (value < 1)
                     throw new ArgumentException("Замедление времени не поддерживается.");
                 _timeModifier = value;
+                if (IsRunning)
+                {
+                    _currentTimer?.Dispose();
+                    _currentTimer = Observable.Interval(TimeSpan.FromMilliseconds(1000.0 / TimeModifier), RxApp.MainThreadScheduler)
+                        .Subscribe(_ => NextMinute());
+                }
             }
         }
 
         [Reactive] public DateTime CurrentDateTime { get; private set; }
 
+        public IReadOnlyCollection<Vehicle> AvailableVehicles { get; private set; }
+
         public void Dispose()
         {
-            _cleanUp.Dispose();
+            _currentTimer?.Dispose();
         }
-
-        public IReadOnlyCollection<CityRoadUsage> RoadsUsage { get; }
 
         public void Start()
         {
             IsRunning = true;
+            _currentTimer = Observable.Interval(TimeSpan.FromMilliseconds(1000.0 / TimeModifier), RxApp.MainThreadScheduler)
+                .Subscribe(_ => NextMinute());
+        }
+
+        private void NextMinute()
+        {
+            if (CurrentDateTime.TimeOfDay >= TimeSpan.FromHours(9) &&
+                CurrentDateTime.TimeOfDay < TimeSpan.FromHours(9) + TimeSpan.FromMinutes(1))
+                // Ежедневные обновления.
+                AvailableVehicles = new VehicleGenerator().GenerateUniqueVehicles(10, _availableVehicleModels, CityMap.Places.OfType<IWarehouse>().First())
+                    .ToArray();
+
+            //Ежеминутные обновления.
+            foreach (var road in CityMap.Roads)
+                road.GenerateRoadUsage(CurrentDateTime);
+
+            // Следующая минута.
+            CurrentDateTime += TimeSpan.FromMinutes(1);
+            _interval.OnNext(CurrentDateTime);
         }
 
         public void Stop()
         {
             IsRunning = false;
-        }
-
-        /*
-         * Если ночь то все дороги пусты
-         * Если рабочий день и время с 7 до 9 и с 17 до 19, то дороги на 1 более загружены
-         * Если выходной день и время с 13 до 19 то дороги на  1 более загружены
-         * В остальных случаях возвращается стандартное значение
-         */
-        public static RoadUsage GenerateRoadUsage(DateTime dateTime, ICityRoad road)
-        {
-            if (dateTime.Hour >= 21 || dateTime.Hour <= 4)
-            {
-                return RoadUsage.Low;
-            }
-            switch(dateTime.DayOfWeek)
-            {
-                case DayOfWeek.Monday:
-                case DayOfWeek.Tuesday:
-                case DayOfWeek.Wednesday:
-                case DayOfWeek.Thursday:
-                case DayOfWeek.Friday:
-                    if (dateTime.Hour >= 7 && dateTime.Hour <= 9 || dateTime.Hour >= 17 && dateTime.Hour <= 19)
-                    {
-                        if (road.Rank == RoadRank.Low)
-                            return RoadUsage.Medium;
-                        else if (road.Rank == RoadRank.Medium)
-                            return RoadUsage.High;
-                        else
-                            return RoadUsage.High; 
-                    }
-                    break;
-                default:
-                    if (dateTime.Hour >= 13 && dateTime.Hour <= 19)
-                    {
-                        if (road.Rank == RoadRank.Low)
-                            return RoadUsage.Medium;
-                        else if (road.Rank == RoadRank.Medium)
-                            return RoadUsage.High;
-                        else
-                            return RoadUsage.High;
-                    }
-                    break;
-            }
-            return (RoadUsage)road.Rank;
+            _currentTimer?.Dispose();
         }
     }
 }

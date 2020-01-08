@@ -1,4 +1,6 @@
-﻿namespace Optimization.Core
+﻿using System;
+
+namespace Optimization.Core
 {
     /// <summary>
     /// Ранг (популярность) дороги.
@@ -42,8 +44,18 @@
         double GetDistance();
 
         /// <summary>
-        /// Ситуация на дороге.
+        /// Ранг дороги.
         /// </summary>
         RoadRank Rank { get; }
+
+        /// <summary>
+        /// Текущая ситуация на дороге.
+        /// </summary>
+        RoadUsage Usage { get; }
+
+        /// <summary>
+        /// Генерирует ситуацию на дороге на момент времени <see cref="dateTime"/>.
+        /// </summary>
+        void GenerateRoadUsage(DateTime dateTime);
     }
 }

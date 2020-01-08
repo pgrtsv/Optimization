@@ -10,7 +10,7 @@ namespace Optimization.DailyModel
             VehicleType type, double rentalPrice, string name)
         {
             Capacity = capacity;
-            AccelerationTime = accelerationTime;
+            MaxVelocity = accelerationTime;
             Dimensions = dimensions;
             Type = type;
             RentalPrice = rentalPrice;
@@ -20,7 +20,7 @@ namespace Optimization.DailyModel
 
         public string Name { get; }
         public double Capacity { get; }
-        public double AccelerationTime { get; }
+        public double MaxVelocity { get; }
         public (double, double, double) Dimensions { get; }
         public VehicleType Type { get; }
         public double RentalPrice { get; }

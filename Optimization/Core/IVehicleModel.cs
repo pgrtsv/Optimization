@@ -38,9 +38,9 @@ namespace Optimization.Core
         double Capacity { get; }
 
         /// <summary>
-        /// Время разгона авто от 0 до 100 км/ч.
+        /// Максимальная скорость ТС, км/ч.
         /// </summary>
-        double AccelerationTime { get; }
+        double MaxVelocity { get; }
 
         /// <summary>
         /// Габариты ТС (ДxШxВ).

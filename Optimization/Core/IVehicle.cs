@@ -24,10 +24,14 @@ namespace Optimization.Core
         Coordinate Position { get; }
 
         /// <summary>
+        /// Маршрут.
+        /// </summary>
+        IRoute Route { get; set; }
+
+        /// <summary>
         /// Двигается по маршруту <see cref="route"/> в течение времени <see cref="TimeSpan"/>.
         /// </summary>
-        /// <param name="route">Маршрут.</param>
         /// <param name="timeSpan">Время движения.</param>
-        void Move(IRoute route, TimeSpan timeSpan);
+        void Move(TimeSpan timeSpan);
     }
 }

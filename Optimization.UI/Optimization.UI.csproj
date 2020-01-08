@@ -20,7 +20,6 @@
     <PackageReference Include="DynamicData" Version="6.14.1" />
   </ItemGroup>
   <ItemGroup>
-    <ProjectReference Include="..\Optimization.DataGeneration\Optimization.DataGeneration.csproj" />
     <ProjectReference Include="..\Optimization\Optimization.csproj" />
   </ItemGroup>
 </Project>

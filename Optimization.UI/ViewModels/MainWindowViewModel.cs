@@ -31,8 +31,8 @@ namespace Optimization.UI.ViewModels
             Goods = new Goods(GoodGenerator.GenerateUniqueGoods(50).Cast<IGood>().ToList());
             CityMap = new CityMapGenerator().Generate(Goods);
             VehicleModels = new ObservableCollection<VehicleModel>(new VehicleModelGenerator().GenerateUniqueVehicleModels(20));
-            Vehicles = new ObservableCollection<Vehicle>(new VehicleGenerator().GenerateUniqueVehicles(50, VehicleModels));
-            SimulationService = new SimulationService(CityMap);
+            Vehicles = new ObservableCollection<Vehicle>(new VehicleGenerator().GenerateUniqueVehicles(50, VehicleModels, CityMap.Places.OfType<IWarehouse>().First()));
+            SimulationService = new SimulationService(CityMap, VehicleModels);
             var canStartSimulation = SimulationService.WhenAnyValue(x => x.IsRunning)
                 .ObserveOn(RxApp.MainThreadScheduler)
                 .Select(x => !x);
@@ -43,7 +43,6 @@ namespace Optimization.UI.ViewModels
 
             var canStopSimulation = SimulationService.WhenAnyValue(x => x.IsRunning);
             StopSimulationCommand = ReactiveCommand.Create(() => SimulationService.Stop(), canStopSimulation);
-            SimulationService.Start();
         }
 
         public ReactiveCommand<Unit, Unit> StartSimulationCommand { get; }

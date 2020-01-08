@@ -1,4 +1,6 @@
-﻿using Avalonia;
+﻿using System;
+using System.Reactive.Linq;
+using Avalonia;
 using Avalonia.Controls;
 using Avalonia.Markup.Xaml;
 using Avalonia.ReactiveUI;
@@ -19,15 +21,15 @@ namespace Optimization.UI.Views
             ViewModel = (MainWindowViewModel) DataContext;
             this.WhenActivated(disposables =>
             {
-                this.OneWayBind(ViewModel, x => x.CityMap, x => x.Map.CityMap);
                 this.OneWayBind(ViewModel, x => x.SimulationService, x => x.Map.SimulationService);
                 this.OneWayBind(ViewModel, x => x.Goods, x => x.GoodsDataGrid.Items);
                 this.OneWayBind(ViewModel, x => x.VehicleModels, x => x.VehicleModelsDataGrid.Items);
                 this.Bind(ViewModel, x => x.SimulationService.TimeModifier, x => x.SimulationTimeComboBox.SelectedItem);
                 this.BindCommand(ViewModel, x => x.StartSimulationCommand, x => x.StartSimulationMenuItem);
                 this.BindCommand(ViewModel, x => x.StopSimulationCommand, x => x.StopSimulationMenuItem);
-                this.OneWayBind(ViewModel, x => x.SimulationService.CurrentDateTime,
-                    x => x.SimulationDateTimeTextBlock.Text, x => x.ToString("f"));
+                this.WhenAnyValue(x => x.ViewModel.SimulationService.CurrentDateTime)
+                    .ObserveOn(RxApp.MainThreadScheduler)
+                    .Subscribe(x => SimulationDateTimeTextBlock.Text = x.ToString("f"));
             });
         }
 

@@ -16,19 +16,11 @@ namespace Optimization.UI.Controls
 {
     public class Map : Canvas
     {
-        public static readonly AvaloniaProperty<ICityMap> CityMapProperty =
-            AvaloniaProperty.RegisterDirect<Map, ICityMap>(
-                nameof(CityMap),
-                x => x.CityMap,
-                (x, value) => x.CityMap = value);
-
         public static readonly AvaloniaProperty<SimulationService> SimulationServiceProperty =
             AvaloniaProperty.RegisterDirect<Map, SimulationService>(
                 nameof(SimulationService),
                 x => x.SimulationService,
                 (x, value) => x.SimulationService = value);
-
-        private ICityMap _cityMap;
 
         private SimulationService _simulationService;
 
@@ -37,9 +29,9 @@ namespace Optimization.UI.Controls
             DrawCommand = ReactiveCommand.Create(() =>
             {
                 Children.Clear();
-                if (CityMap == null) return;
-                foreach (var cityRoad in CityMap.Roads) Children.Add(CreateElementForRoad(cityRoad));
-                foreach (var cityPlace in CityMap.Places)
+                if (SimulationService == null) return;
+                foreach (var cityRoad in SimulationService.CityMap.Roads) Children.Add(CreateElementForRoad(cityRoad));
+                foreach (var cityPlace in SimulationService.CityMap.Places)
                 {
                     Children.Add(CreateElementForPlace(cityPlace));
                     Children.Add(LabelPlace(cityPlace));
@@ -49,14 +41,12 @@ namespace Optimization.UI.Controls
                     Children = new Transforms { new TranslateTransform(500, 500), new ScaleTransform(0.5, 0.5) }
                 };
             });
-            this.WhenAnyValue(x => x.CityMap)
-                .ObserveOn(RxApp.MainThreadScheduler)
-                .Subscribe(x => DrawCommand.Execute(null));
             this.WhenAnyValue(x => x.SimulationService)
                 .ObserveOn(RxApp.MainThreadScheduler)
                 .Subscribe(x =>
                 {
                     if (x == null) return;
+                    DrawCommand.Execute(null);
                     RecolorRoads();
                     x.Interval
                         .ObserveOn(RxApp.MainThreadScheduler)
@@ -70,12 +60,6 @@ namespace Optimization.UI.Controls
             set => SetAndRaise(SimulationServiceProperty, ref _simulationService, value);
         }
 
-        public ICityMap CityMap
-        {
-            get => _cityMap;
-            set => SetAndRaise(CityMapProperty, ref _cityMap, value);
-        }
-
         public ICommand DrawCommand { get; }
 
         public void RecolorRoads()
@@ -83,7 +67,8 @@ namespace Optimization.UI.Controls
             if (SimulationService == null) return;
             foreach (var child in Children.OfType<Line>())
             {
-                var usage = SimulationService.RoadsUsage.First(x => x.Road.Equals(child.DataContext)).Usage;
+                var usage = SimulationService.CityMap.Roads.First(x => x.Equals(child.DataContext)).Usage;
+                
                 child.Stroke = GetBrushFromRoadUsage(usage);
             }
         }

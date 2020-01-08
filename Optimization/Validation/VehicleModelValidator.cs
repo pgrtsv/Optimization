@@ -9,7 +9,7 @@ namespace Optimization.Validation
 
         public VehicleModelValidator()
         {
-            RuleFor(x => x.AccelerationTime)
+            RuleFor(x => x.MaxVelocity)
                 .GreaterThan(0);
             RuleFor(x => x.Dimensions)
                 .Must(x => x.Item1 > 0)
