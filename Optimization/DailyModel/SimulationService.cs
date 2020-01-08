@@ -102,9 +102,48 @@ namespace Optimization.DailyModel
             IsRunning = false;
         }
 
+        /*
+         * Если ночь то все дороги пусты
+         * Если рабочий день и время с 7 до 9 и с 17 до 19, то дороги на 1 более загружены
+         * Если выходной день и время с 13 до 19 то дороги на  1 более загружены
+         * В остальных случаях возвращается стандартное значение
+         */
         public static RoadUsage GenerateRoadUsage(DateTime dateTime, ICityRoad road)
         {
-            return (RoadUsage) new Random().Next(0, 3);
+            if (dateTime.Hour >= 21 || dateTime.Hour <= 4)
+            {
+                return RoadUsage.Low;
+            }
+            switch(dateTime.DayOfWeek)
+            {
+                case DayOfWeek.Monday:
+                case DayOfWeek.Tuesday:
+                case DayOfWeek.Wednesday:
+                case DayOfWeek.Thursday:
+                case DayOfWeek.Friday:
+                    if (dateTime.Hour >= 7 && dateTime.Hour <= 9 || dateTime.Hour >= 17 && dateTime.Hour <= 19)
+                    {
+                        if (road.Rank == RoadRank.Low)
+                            return RoadUsage.Medium;
+                        else if (road.Rank == RoadRank.Medium)
+                            return RoadUsage.High;
+                        else
+                            return RoadUsage.High; 
+                    }
+                    break;
+                default:
+                    if (dateTime.Hour >= 13 && dateTime.Hour <= 19)
+                    {
+                        if (road.Rank == RoadRank.Low)
+                            return RoadUsage.Medium;
+                        else if (road.Rank == RoadRank.Medium)
+                            return RoadUsage.High;
+                        else
+                            return RoadUsage.High;
+                    }
+                    break;
+            }
+            return (RoadUsage)road.Rank;
         }
     }
 }
