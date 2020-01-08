@@ -1,4 +1,5 @@
-﻿using FluentValidation;
+﻿using System;
+using FluentValidation;
 using Optimization.Core;
 using Optimization.Validation;
 
@@ -22,6 +23,12 @@ namespace Optimization.DailyModel
 
         public int Id { get; }
         public VehicleModel VehicleModel { get; }
+        public Coordinate Position => throw new NotImplementedException();
+        public void Move(IRoute route, TimeSpan timeSpan)
+        {
+            throw new NotImplementedException();
+        }
+
         public string Name { get; }
         public double Capacity { get; }
         public double AccelerationTime { get; }

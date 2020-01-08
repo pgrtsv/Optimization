@@ -10,9 +10,6 @@ namespace Optimization.UI.Views
 {
     public class MainWindow : ReactiveWindow<MainWindowViewModel>
     {
-        public Map Map => this.FindControl<Map>("Map");
-        public DataGrid GoodsDataGrid => this.FindControl<DataGrid>(nameof(GoodsDataGrid));
-        public DataGrid VehicleModelsDataGrid => this.FindControl<DataGrid>(nameof(VehicleModelsDataGrid));
         public MainWindow()
         {
             InitializeComponent();
@@ -23,10 +20,25 @@ namespace Optimization.UI.Views
             this.WhenActivated(disposables =>
             {
                 this.OneWayBind(ViewModel, x => x.CityMap, x => x.Map.CityMap);
+                this.OneWayBind(ViewModel, x => x.SimulationService, x => x.Map.SimulationService);
                 this.OneWayBind(ViewModel, x => x.Goods, x => x.GoodsDataGrid.Items);
                 this.OneWayBind(ViewModel, x => x.VehicleModels, x => x.VehicleModelsDataGrid.Items);
+                this.Bind(ViewModel, x => x.SimulationService.TimeModifier, x => x.SimulationTimeComboBox.SelectedItem);
+                this.BindCommand(ViewModel, x => x.StartSimulationCommand, x => x.StartSimulationMenuItem);
+                this.BindCommand(ViewModel, x => x.StopSimulationCommand, x => x.StopSimulationMenuItem);
+                this.OneWayBind(ViewModel, x => x.SimulationService.CurrentDateTime,
+                    x => x.SimulationDateTimeTextBlock.Text, x => x.ToString("f"));
             });
         }
+
+        public Map Map => this.FindControl<Map>("Map");
+        public DataGrid GoodsDataGrid => this.FindControl<DataGrid>(nameof(GoodsDataGrid));
+        public DataGrid VehicleModelsDataGrid => this.FindControl<DataGrid>(nameof(VehicleModelsDataGrid));
+        public ComboBox SimulationTimeComboBox => this.FindControl<ComboBox>(nameof(SimulationTimeComboBox));
+
+        public TextBlock SimulationDateTimeTextBlock => this.FindControl<TextBlock>(nameof(SimulationDateTimeTextBlock));
+        public MenuItem StartSimulationMenuItem => this.FindControl<MenuItem>(nameof(StartSimulationMenuItem));
+        public MenuItem StopSimulationMenuItem => this.FindControl<MenuItem>(nameof(StopSimulationMenuItem));
 
         private void InitializeComponent()
         {

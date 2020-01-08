@@ -16,7 +16,26 @@
         <StyleInclude Source="avares://Avalonia.Themes.Default/DefaultTheme.xaml"/>
         <StyleInclude Source="avares://Avalonia.Themes.Default/Accents/BaseLight.xaml"/>
         <StyleInclude Source="resm:Avalonia.Controls.DataGrid.Themes.Default.xaml?assembly=Avalonia.Controls.DataGrid"/>
-      
+
+        <Style Selector="Menu">
+          <Setter Property="Padding" Value="0" />
+          <Setter Property="Margin" Value="0" />
+          <Setter Property="Height" Value="40" />
+          <Setter Property="Background" Value="{DynamicResource BackgroundAccentBrush1}" />
+        </Style>
+        <Style Selector="MenuItem">
+          <Setter Property="Background" Value="{DynamicResource BackgroundAccentBrush1}" />
+          <Setter Property="FontSize" Value="18" />
+          <Setter Property="Margin" Value="0" />
+          <Setter Property="Padding" Value="6" />
+        </Style>
+        <Style Selector="MenuItem ContentPresenter">
+          <Setter Property="VerticalAlignment" Value="Center" />
+        </Style>
+        <Style Selector="MenuItem:selected /template/ Border#root">
+          <Setter Property="Background" Value="#ff8f00" />
+          <Setter Property="BorderBrush" Value="#ff8f00"/>
+        </Style>
         <Style Selector="TabControl">
           <Setter Property="Background" Value="#ffffff" />
         </Style>

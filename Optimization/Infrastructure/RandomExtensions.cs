@@ -35,7 +35,8 @@ namespace Optimization.Infrastructure
         }
 
         /// <summary>
-        /// Возвращает перечисление из элементов <see cref="list"/> длиной <see cref="count"/> в случайном порядке. Элементы могут повторяться.
+        /// Возвращает перечисление из элементов <see cref="list"/> длиной <see cref="count"/> в случайном порядке.
+        /// Элементы могут повторяться.
         /// </summary>
         public static IEnumerable<T> GetRandomFrom<T>(this Random random, IList<T> list, int count)
         {
@@ -46,6 +47,22 @@ namespace Optimization.Infrastructure
             {
                 var randomIndex = random.Next(0, list.Count - 1);
                 yield return list[randomIndex];
+            }
+        }
+
+        /// <summary>
+        /// Возвращает случайный элемент из коллекции всех доступных элементов,
+        /// исключая возможность выбора элемента входящего в список исключений.
+        /// </summary>
+        public static T PeekRandomFrom<T>(this Random random, IList<T> list, IList<T> excludeList)
+        {
+            while (true)
+            {
+                var randomIndex = random.Next(0, list.Count - 1);
+                var randomElement = list[randomIndex];
+                if (excludeList.Contains(randomElement))
+                    continue;
+                return randomElement;
             }
         }
 

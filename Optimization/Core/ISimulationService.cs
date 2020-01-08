@@ -1,6 +1,6 @@
 ﻿namespace Optimization.Core
 {
-    public interface ISimulation
+    public interface ISimulationService
     {
         IEnvironment Environment { get; }
     }
