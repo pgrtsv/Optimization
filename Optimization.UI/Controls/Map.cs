@@ -24,6 +24,8 @@ namespace Optimization.UI.Controls
 
         private SimulationService _simulationService;
 
+        private Rectangle _viewForTestVehicle;
+
         public Map()
         {
             DrawCommand = ReactiveCommand.Create(() =>
@@ -36,6 +38,17 @@ namespace Optimization.UI.Controls
                     Children.Add(CreateElementForPlace(cityPlace));
                     Children.Add(LabelPlace(cityPlace));
                 }
+                _viewForTestVehicle = new Rectangle
+                {
+                    Width = 20,
+                    Height = 20,
+                    ZIndex = 3,
+                    Fill = Brushes.Black,
+                    Stroke = Brushes.Black
+                };
+                Children.Add(_viewForTestVehicle);
+                SetTop(_viewForTestVehicle, 0);
+                SetLeft(_viewForTestVehicle, 0);
                 RenderTransform = new TransformGroup
                 {
                     Children = new Transforms { new TranslateTransform(500, 500), new ScaleTransform(0.5, 0.5) }
@@ -50,7 +63,11 @@ namespace Optimization.UI.Controls
                     RecolorRoads();
                     x.Interval
                         .ObserveOn(RxApp.MainThreadScheduler)
-                        .Subscribe(_ => RecolorRoads());
+                        .Subscribe(_ =>
+                        {
+                            RecolorRoads();
+                            MoveVehicles();
+                        });
                 });
         }
 
@@ -71,6 +88,13 @@ namespace Optimization.UI.Controls
                 
                 child.Stroke = GetBrushFromRoadUsage(usage);
             }
+        }
+
+        public void MoveVehicles()
+        {
+            if (SimulationService == null) return;
+            SetTop(_viewForTestVehicle, SimulationService.TestVehicle.Position.Y);
+            SetLeft(_viewForTestVehicle, SimulationService.TestVehicle.Position.X);
         }
 
 

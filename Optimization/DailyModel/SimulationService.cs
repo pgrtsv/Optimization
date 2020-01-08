@@ -51,9 +51,27 @@ namespace Optimization.DailyModel
             _availableVehicleModels = availableVehicleModels.ToList();
             TimeModifier = 60;
             CurrentDateTime = DateTime.Now;
+
+            var warehouse = CityMap.Places.OfType<IWarehouse>().First();
+
+            TestVehicle = new Vehicle(0, new VehicleModel(20, 50, (10, 10, 10), VehicleType.Passenger, 10000, "Weee"), "what?", warehouse);
+
+            var visitedLocations = new List<ICityPlace>();
+            var firstRoad = CityMap.Roads.First(x => x.FirstPlace.Equals(warehouse) || x.SecondPlace.Equals(warehouse));
+            visitedLocations.Add(firstRoad.FirstPlace);
+            visitedLocations.Add(firstRoad.SecondPlace);
+            var secondLocation = firstRoad.FirstPlace.Equals(warehouse) ? firstRoad.SecondPlace : firstRoad.FirstPlace;
+            var secondRoad = CityMap.Roads.First(x =>
+                x.FirstPlace.Equals(secondLocation) && !visitedLocations.Contains(x.SecondPlace)
+                || x.SecondPlace.Equals(secondLocation) && !visitedLocations.Contains(x.FirstPlace));
+            var thirdLocation = secondRoad.FirstPlace.Equals(secondLocation)
+                ? secondRoad.SecondPlace
+                : secondRoad.FirstPlace;
+            TestVehicle.Route = new Route(warehouse, thirdLocation, new[] { firstRoad, secondRoad });
         }
 
         public ICityMap CityMap { get; }
+        public Vehicle TestVehicle { get; }
 
         public IReadOnlyCollection<IVehicleModel> AvailableVehicleModels => _availableVehicleModels;
 
@@ -105,6 +123,7 @@ namespace Optimization.DailyModel
             //Ежеминутные обновления.
             foreach (var road in CityMap.Roads)
                 road.GenerateRoadUsage(CurrentDateTime);
+            TestVehicle.Move(TimeSpan.FromMinutes(1));
 
             // Следующая минута.
             CurrentDateTime += TimeSpan.FromMinutes(1);
