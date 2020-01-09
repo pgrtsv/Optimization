@@ -65,11 +65,15 @@ namespace Optimization.DailyModel
                 if (neededGoods.Count > 10 && remainingMaxVolume > minTotalVolume)
                     if (!_random.NextBool(220/neededGoods.Count, (int) 0.9*neededGoods.Count))
                         return new Order(this, neededGoods);
-                
+
+                /* Если уже все доступные товары задействованы в заказе - возвращаем заказ. */
+                if(_goods.Count == selectedGoods.Count)
+                    return new Order(this, neededGoods);
+
                 /* Выбираем случайный товар. */
-                var good = _random.PeekRandomFrom((IList<IGood>) _goods, selectedGoods);
+                var good = _random.GetRandomFrom((IList<IGood>) _goods, selectedGoods);
                 while(good.Volume > remainingMaxVolume)
-                    good = _random.PeekRandomFrom((IList<IGood>)_goods, selectedGoods);
+                    good = _random.GetRandomFrom((IList<IGood>)_goods, selectedGoods);
 
                 /* Генерируем количество данного товара в заказе. */
                 var countGenerationWeights = GetGoodCountGenerationWeights(good);
