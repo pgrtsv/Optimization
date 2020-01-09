@@ -1,5 +1,7 @@
 ﻿using System.Collections.Generic;
+using FluentValidation;
 using Optimization.Core;
+using Optimization.Validation;
 
 namespace Optimization.DailyModel
 {
@@ -10,6 +12,7 @@ namespace Optimization.DailyModel
             Start = start;
             End = end;
             Roads = roads;
+            new RouteValidator().ValidateAndThrow(this);
         }
 
         public ICityPlace Start { get; }

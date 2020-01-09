@@ -13,31 +13,6 @@ using ReactiveUI.Fody.Helpers;
 
 namespace Optimization.DailyModel
 {
-    public class CityRoadUsage : INotifyPropertyChanged
-    {
-        private RoadUsage _usage;
-
-        public CityRoadUsage(ICityRoad road, RoadUsage usage)
-        {
-            Road = road;
-            Usage = usage;
-        }
-
-        public ICityRoad Road { get; }
-
-        public RoadUsage Usage
-        {
-            get => _usage;
-            set
-            {
-                _usage = value;
-                PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(nameof(Usage)));
-            }
-        }
-
-        public event PropertyChangedEventHandler PropertyChanged;
-    }
-
     public class SimulationService : ReactiveObject, IDisposable
     {
         private readonly IOptimizer _optimizer;
@@ -133,7 +108,11 @@ namespace Optimization.DailyModel
                 DailyOrders = CityMap.Places.OfType<SalePoint>().Select(x => x.GenerateOrder()).ToArray();
 
                 Solutions = _optimizer.Solve(AvailableVehicles, DailyOrders, CityMap, CurrentDateTime);
-                
+
+                // Заносим в расходы стоимость аренды выбранных оптимизатором ТС.
+                foreach (var vehicle in Solutions.Select(x => x.Vehicle))
+                    Profit -= (decimal) vehicle.RentalPrice;
+
                 _dayInterval.OnNext(CurrentDateTime);
             }
 

@@ -13,6 +13,7 @@ namespace Optimization.DailyModel
             DateTime date)
         {
             var ret = new List<IOptimizerSolution>();
+            // TODO: бахнуть "оптимизатор".
             return ret;
         }
     }

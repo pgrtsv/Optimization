@@ -109,15 +109,17 @@
               <MenuItem Header="Остановить" x:Name="StopSimulationMenuItem" 
                         Foreground="{DynamicResource ForegroundAccentBrush1}" />
             </Menu>
-            <controls:Map x:Name="Map" Grid.Row="1" Grid.ColumnSpan="2" />
+            <controls:Map x:Name="Map" Grid.Row="1" Grid.ColumnSpan="2" Grid.RowSpan="2" />
             <StackPanel
               Grid.Row="2" Grid.Column="0"
               VerticalAlignment="Bottom">
               <TextBlock 
                 Background="#66ffffff"
+                Foreground="#22aa22"
                 x:Name="ProfitTextBlock"/>       
               <TextBlock 
                 Background="#66ffffff"
+                Foreground="#aa2222"
                 x:Name="PenaltyTextBlock"/>
               <TextBlock 
                 Background="#66ffffff"
