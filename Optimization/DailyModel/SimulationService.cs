@@ -40,44 +40,34 @@ namespace Optimization.DailyModel
 
     public class SimulationService : ReactiveObject, IDisposable
     {
+        private readonly IOptimizer _optimizer;
         private readonly List<VehicleModel> _availableVehicleModels;
         private double _timeModifier;
-        private readonly Subject<DateTime> _interval = new Subject<DateTime>();
+        private readonly Subject<DateTime> _dayInterval = new Subject<DateTime>();
+        private readonly Subject<DateTime> _minuteInterval = new Subject<DateTime>();
         private IDisposable _currentTimer;
 
-        public SimulationService(ICityMap cityMap, IEnumerable<VehicleModel> availableVehicleModels)
+        public SimulationService(
+            ICityMap cityMap, 
+            IEnumerable<VehicleModel> availableVehicleModels,
+            IOptimizer optimizer)
         {
+            _optimizer = optimizer;
             CityMap = cityMap;
             _availableVehicleModels = availableVehicleModels.ToList();
             TimeModifier = 60;
             CurrentDateTime = DateTime.Now;
-
-            var warehouse = CityMap.Places.OfType<IWarehouse>().First();
-
-            TestVehicle = new Vehicle(0, new VehicleModel(20, 50, (10, 10, 10), VehicleType.Passenger, 10000, "Weee"), "what?", warehouse);
-
-            var visitedLocations = new List<ICityPlace>();
-            var firstRoad = CityMap.Roads.First(x => x.FirstPlace.Equals(warehouse) || x.SecondPlace.Equals(warehouse));
-            visitedLocations.Add(firstRoad.FirstPlace);
-            visitedLocations.Add(firstRoad.SecondPlace);
-            var secondLocation = firstRoad.FirstPlace.Equals(warehouse) ? firstRoad.SecondPlace : firstRoad.FirstPlace;
-            var secondRoad = CityMap.Roads.First(x =>
-                x.FirstPlace.Equals(secondLocation) && !visitedLocations.Contains(x.SecondPlace)
-                || x.SecondPlace.Equals(secondLocation) && !visitedLocations.Contains(x.FirstPlace));
-            var thirdLocation = secondRoad.FirstPlace.Equals(secondLocation)
-                ? secondRoad.SecondPlace
-                : secondRoad.FirstPlace;
-            TestVehicle.Route = new Route(warehouse, thirdLocation, new[] { firstRoad, secondRoad });
         }
 
         public ICityMap CityMap { get; }
-        public Vehicle TestVehicle { get; }
-
+        
         public IReadOnlyCollection<IVehicleModel> AvailableVehicleModels => _availableVehicleModels;
 
         [Reactive] public bool IsRunning { get; private set; }
 
-        public IObservable<DateTime> Interval => _interval;
+        public IObservable<DateTime> MinuteInterval => _minuteInterval;
+
+        public IObservable<DateTime> DayInterval => _dayInterval;
 
         public double TimeModifier
         {
@@ -98,7 +88,12 @@ namespace Optimization.DailyModel
 
         [Reactive] public DateTime CurrentDateTime { get; private set; }
 
-        public IReadOnlyCollection<Vehicle> AvailableVehicles { get; private set; }
+        [Reactive] public IReadOnlyCollection<Vehicle> AvailableVehicles { get; private set; }
+        [Reactive] public IReadOnlyCollection<IOrder> DailyOrders { get; private set; }
+        [Reactive] public IReadOnlyCollection<IOptimizerSolution> Solutions { get; private set; }
+
+        [Reactive] public decimal Penalty { get; private set; }
+        [Reactive] public decimal Profit { get; private set; }
 
         public void Dispose()
         {
@@ -116,18 +111,42 @@ namespace Optimization.DailyModel
         {
             if (CurrentDateTime.TimeOfDay >= TimeSpan.FromHours(9) &&
                 CurrentDateTime.TimeOfDay < TimeSpan.FromHours(9) + TimeSpan.FromMinutes(1))
+            {
+                // Ежедневный подсчёт штрафов и доходов.
+                if (Solutions != null)
+                    foreach (var solution in Solutions)
+                        if (solution.Vehicle.Position.Equals(solution.Route.End.Coordinates))
+                        {
+                            foreach (var good in solution.Goods)
+                                Profit += good.Key.Price * good.Value;
+                        }
+                        else
+                        {
+                            foreach (var good in solution.Goods)
+                                Penalty += good.Key.Price * good.Value;
+                        }
+
                 // Ежедневные обновления.
-                AvailableVehicles = new VehicleGenerator().GenerateUniqueVehicles(10, _availableVehicleModels, CityMap.Places.OfType<IWarehouse>().First())
+                AvailableVehicles = new VehicleGenerator().GenerateUniqueVehicles(10, _availableVehicleModels,
+                        CityMap.Places.OfType<IWarehouse>().First())
                     .ToArray();
+                DailyOrders = CityMap.Places.OfType<SalePoint>().Select(x => x.GenerateOrder()).ToArray();
+
+                Solutions = _optimizer.Solve(AvailableVehicles, DailyOrders, CityMap, CurrentDateTime);
+                
+                _dayInterval.OnNext(CurrentDateTime);
+            }
 
             //Ежеминутные обновления.
             foreach (var road in CityMap.Roads)
                 road.GenerateRoadUsage(CurrentDateTime);
-            TestVehicle.Move(TimeSpan.FromMinutes(1));
+            if (Solutions != null)
+                foreach (var vehicle in Solutions.Select(x => x.Vehicle))
+                    vehicle.Move(TimeSpan.FromMinutes(1));
 
             // Следующая минута.
             CurrentDateTime += TimeSpan.FromMinutes(1);
-            _interval.OnNext(CurrentDateTime);
+            _minuteInterval.OnNext(CurrentDateTime);
         }
 
         public void Stop()

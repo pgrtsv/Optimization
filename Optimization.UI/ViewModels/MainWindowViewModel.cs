@@ -13,6 +13,7 @@ namespace Optimization.UI.ViewModels
 {
     public class MainWindowViewModel : ViewModelBase
     {
+        private object _selectedObject;
         public CityMap CityMap { get; }
 
         public Goods Goods { get; }
@@ -32,7 +33,7 @@ namespace Optimization.UI.ViewModels
             CityMap = new CityMapGenerator().Generate(Goods);
             VehicleModels = new ObservableCollection<VehicleModel>(new VehicleModelGenerator().GenerateUniqueVehicleModels(20));
             Vehicles = new ObservableCollection<Vehicle>(new VehicleGenerator().GenerateUniqueVehicles(50, VehicleModels, CityMap.Places.OfType<IWarehouse>().First()));
-            SimulationService = new SimulationService(CityMap, VehicleModels);
+            SimulationService = new SimulationService(CityMap, VehicleModels, new Optimizer());
             var canStartSimulation = SimulationService.WhenAnyValue(x => x.IsRunning)
                 .ObserveOn(RxApp.MainThreadScheduler)
                 .Select(x => !x);
@@ -47,5 +48,11 @@ namespace Optimization.UI.ViewModels
 
         public ReactiveCommand<Unit, Unit> StartSimulationCommand { get; }
         public ReactiveCommand<Unit, Unit> StopSimulationCommand { get; }
+
+        public object SelectedObject
+        {
+            get => _selectedObject;
+            set => this.RaiseAndSetIfChanged(ref _selectedObject, value);
+        }
     }
 }
