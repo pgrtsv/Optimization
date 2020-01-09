@@ -1,13 +1,13 @@
 ﻿using System;
-using System.Collections.ObjectModel;
 using System.Linq;
+using System.Reactive;
 using System.Reactive.Linq;
 using System.Windows.Input;
 using Avalonia;
 using Avalonia.Controls;
+using Avalonia.Controls.Presenters;
 using Avalonia.Controls.Shapes;
 using Avalonia.Media;
-using DynamicData;
 using Optimization.Core;
 using Optimization.DailyModel;
 using ReactiveUI;
@@ -22,12 +22,20 @@ namespace Optimization.UI.Controls
                 x => x.SimulationService,
                 (x, value) => x.SimulationService = value);
 
-        private SimulationService _simulationService;
+        public static readonly AvaloniaProperty<object> SelectedObjectProperty =
+            AvaloniaProperty.RegisterDirect<Map, object>(
+                nameof(SelectedObject),
+                x => x.SelectedObject,
+                (x, value) => x.SelectedObject = value);
 
-        private Rectangle _viewForTestVehicle;
+        private SimulationService _simulationService;
+        private object _selectedObject;
+
+        private readonly ReactiveCommand<object, Unit> _selectObjectCommand;
 
         public Map()
         {
+            _selectObjectCommand = ReactiveCommand.Create<object>(x => { SelectedObject = x; });
             DrawCommand = ReactiveCommand.Create(() =>
             {
                 Children.Clear();
@@ -38,20 +46,10 @@ namespace Optimization.UI.Controls
                     Children.Add(CreateElementForPlace(cityPlace));
                     Children.Add(LabelPlace(cityPlace));
                 }
-                _viewForTestVehicle = new Rectangle
-                {
-                    Width = 20,
-                    Height = 20,
-                    ZIndex = 3,
-                    Fill = Brushes.Black,
-                    Stroke = Brushes.Black
-                };
-                Children.Add(_viewForTestVehicle);
-                SetTop(_viewForTestVehicle, 0);
-                SetLeft(_viewForTestVehicle, 0);
+
                 RenderTransform = new TransformGroup
                 {
-                    Children = new Transforms { new TranslateTransform(500, 500), new ScaleTransform(0.5, 0.5) }
+                    Children = new Transforms {new TranslateTransform(500, 500), new ScaleTransform(0.5, 0.5)}
                 };
             });
             this.WhenAnyValue(x => x.SimulationService)
@@ -61,12 +59,22 @@ namespace Optimization.UI.Controls
                     if (x == null) return;
                     DrawCommand.Execute(null);
                     RecolorRoads();
-                    x.Interval
+                    x.MinuteInterval
                         .ObserveOn(RxApp.MainThreadScheduler)
                         .Subscribe(_ =>
                         {
                             RecolorRoads();
                             MoveVehicles();
+                        });
+                    x.DayInterval
+                        .ObserveOn(RxApp.MainThreadScheduler)
+                        .Subscribe(_ =>
+                        {
+                            foreach (var vehicleView in Children.OfType<Button>().Where(x => x.DataContext is IVehicle))
+                                Children.Remove(vehicleView);
+
+                            foreach (var vehicle in SimulationService.Solutions.Select(x => x.Vehicle))
+                                Children.Add(CreateElementForVehicle(vehicle));
                         });
                 });
         }
@@ -77,6 +85,12 @@ namespace Optimization.UI.Controls
             set => SetAndRaise(SimulationServiceProperty, ref _simulationService, value);
         }
 
+        public object SelectedObject
+        {
+            get => _selectedObject;
+            set => SetAndRaise(SelectedObjectProperty, ref _selectedObject, value);
+        }
+
         public ICommand DrawCommand { get; }
 
         public void RecolorRoads()
@@ -85,7 +99,7 @@ namespace Optimization.UI.Controls
             foreach (var child in Children.OfType<Line>())
             {
                 var usage = SimulationService.CityMap.Roads.First(x => x.Equals(child.DataContext)).Usage;
-                
+
                 child.Stroke = GetBrushFromRoadUsage(usage);
             }
         }
@@ -93,23 +107,66 @@ namespace Optimization.UI.Controls
         public void MoveVehicles()
         {
             if (SimulationService == null) return;
-            SetTop(_viewForTestVehicle, SimulationService.TestVehicle.Position.Y);
-            SetLeft(_viewForTestVehicle, SimulationService.TestVehicle.Position.X);
+            foreach (var vehicleView in Children.OfType<Button>().Where(x => x.DataContext is IVehicle))
+            {
+                SetTop(vehicleView, ((IVehicle)DataContext).Position.Y);
+                SetLeft(vehicleView, ((IVehicle)DataContext).Position.X);
+            }
         }
 
 
-        public Ellipse CreateElementForPlace(ICityPlace cityPlace)
+        public Button CreateElementForPlace(ICityPlace cityPlace)
         {
-            var ellipse = new Ellipse {Width = 10, Height = 10, ZIndex = 2};
-            if (cityPlace is Warehouse)
-                ellipse.Fill = Brushes.Blue;
-            else if (cityPlace is SalePoint)
-                ellipse.Fill = Brushes.Brown;
-            else
-                ellipse.Fill = Brushes.Black;
+            var ellipse = new Button
+            {
+                Width = 10, Height = 10, ZIndex = 2,
+                DataContext = cityPlace,
+                Command = _selectObjectCommand,
+                CommandParameter = cityPlace,
+                Background = GetBrushForPlace(cityPlace),
+                BorderBrush = GetBrushForPlace(cityPlace),
+            };
             SetLeft(ellipse, cityPlace.Coordinates.X - 5);
             SetTop(ellipse, cityPlace.Coordinates.Y - 5);
             return ellipse;
+        }
+
+        private ISolidColorBrush GetBrushForPlace(ICityPlace cityPlace)
+        {
+            return cityPlace switch
+                {
+                Warehouse _ => Brushes.Blue,
+                SalePoint _ => Brushes.Brown,
+                _ => Brushes.Black
+                };
+        }
+
+        public Button CreateElementForVehicle(IVehicle vehicle)
+        {
+            var button = new Button
+            {
+                Width = 20,
+                Height = 20,
+                ZIndex = 3,
+                Background = GetBrushForVehicle(vehicle),
+                DataContext = vehicle,
+                Command = _selectObjectCommand,
+                CommandParameter = vehicle,
+                BorderBrush = GetBrushForVehicle(vehicle)
+            };
+            SetTop(button, vehicle.Position.Y);
+            SetLeft(button, vehicle.Position.X);
+            return button;
+        }
+
+        private ISolidColorBrush GetBrushForVehicle(IVehicle vehicle)
+        {
+            return vehicle.VehicleModel.Type switch
+                {
+                VehicleType.BigTruck => Brushes.Khaki,
+                VehicleType.SmallTruck => Brushes.Lavender,
+                VehicleType.Passenger => Brushes.Goldenrod,
+                };
         }
 
         public TextBlock LabelPlace(ICityPlace cityPlace)
@@ -136,11 +193,11 @@ namespace Optimization.UI.Controls
         private ISolidColorBrush GetBrushFromRoadUsage(RoadUsage roadUsage)
         {
             return roadUsage switch
-            {
+                {
                 RoadUsage.High => Brushes.Red,
                 RoadUsage.Medium => Brushes.Yellow,
                 RoadUsage.Low => Brushes.Green
-            };
+                };
         }
 
         public Line CreateElementForRoad(ICityRoad cityRoad)
