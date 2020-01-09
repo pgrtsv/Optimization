@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Collections.Generic;
 using System.Linq;
 using DynamicData;
 using FluentValidation;
@@ -19,12 +20,14 @@ namespace Optimization.DailyModel
             Id = id;
             VehicleModel = vehicleModel;
             Position = warehouse.Coordinates;
+            Cargo = new Dictionary<IGood, int>();
         }
 
         public int Id { get; }
         public VehicleModel VehicleModel { get; }
         public Coordinate Position { get; private set; }
         public IRoute Route { get; set; }
+        public IDictionary<IGood, int> Cargo { get; set; }
 
         private ICityRoad _currentRoad;
         private bool _isDirect;

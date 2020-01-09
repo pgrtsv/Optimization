@@ -13,8 +13,19 @@ namespace Optimization.DailyModel
             Vehicle.Route = route;
         }
 
+        /// <summary>
+        /// Автомобиль для аренды.
+        /// </summary>
         public IVehicle Vehicle { get; }
+
+        /// <summary>
+        /// Маршрут следования ТС.
+        /// </summary>
         public IRoute Route { get; }
+
+        /// <summary>
+        /// Товары, загруженные в ТС.
+        /// </summary>
         public IDictionary<IGood, int> Goods { get; }
     }
 }

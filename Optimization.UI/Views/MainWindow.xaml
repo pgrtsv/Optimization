@@ -41,6 +41,21 @@
             <StackPanel>
                 <TextBlock Text="Точка продаж" />
                 <TextBlock Text="Требуется:" />
+              <ItemsControl Items="{Binding CurrentOrder.NeededGoods}">
+                <ItemsControl.ItemTemplate>
+                  <DataTemplate>
+                    <TextBlock>
+                      <TextBlock.Text>
+                        <MultiBinding StringFormat="{}{0} по цене {1}: {2}">
+                          <Binding Path="Key.Name" />
+                          <Binding Path="Key.Price" />
+                          <Binding Path="Value" />
+                        </MultiBinding>
+                      </TextBlock.Text>
+                    </TextBlock>
+                  </DataTemplate>
+                </ItemsControl.ItemTemplate>
+              </ItemsControl>
             </StackPanel>
         </DataTemplate>
     </Window.DataTemplates>
@@ -64,8 +79,7 @@
             <DataGrid.Columns>
               <DataGridTextColumn Header="Модель" Binding="{Binding Name}" />
               <DataGridTextColumn Header="Вместительность, м3" Binding="{Binding Capacity}" />
-              <DataGridTextColumn Header="Время разгона, с" Binding="{Binding AccelerationTime}" />
-              <DataGridTextColumn Header="Габариты" Binding="{Binding Dimensions}" />
+              <DataGridTextColumn Header="Максимальная скорость, км/ч" Binding="{Binding MaxVelocity}" />
               <DataGridTextColumn Header="Тип" Binding="{Binding Type}" />
               <DataGridTextColumn Header="Цена аренды" Binding="{Binding RentalPrice}" />
             </DataGrid.Columns>
@@ -77,8 +91,7 @@
               <DataGridTextColumn Header="ID ТС" Binding="{Binding Id}" />
               <DataGridTextColumn Header="Модель" Binding="{Binding Name}" />
               <DataGridTextColumn Header="Вместительность, м3" Binding="{Binding Capacity}" />
-              <DataGridTextColumn Header="Время разгона, с" Binding="{Binding AccelerationTime}" />
-              <DataGridTextColumn Header="Габариты" Binding="{Binding Dimensions}" />
+              <DataGridTextColumn Header="Максимальная скорость, км/ч" Binding="{Binding MaxVelocity}" />
               <DataGridTextColumn Header="Тип" Binding="{Binding Type}" />
               <DataGridTextColumn Header="Цена аренды" Binding="{Binding RentalPrice}" />
             </DataGrid.Columns>

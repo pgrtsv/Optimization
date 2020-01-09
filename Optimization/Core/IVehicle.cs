@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Collections.Generic;
 using Optimization.DailyModel;
 
 namespace Optimization.Core
@@ -27,6 +28,8 @@ namespace Optimization.Core
         /// Маршрут.
         /// </summary>
         IRoute Route { get; set; }
+
+        IDictionary<IGood, int> Cargo { get; set; }
 
         /// <summary>
         /// Двигается по маршруту <see cref="route"/> в течение времени <see cref="TimeSpan"/>.
