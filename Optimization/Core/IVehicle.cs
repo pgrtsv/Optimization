@@ -29,7 +29,9 @@ namespace Optimization.Core
         /// </summary>
         IRoute Route { get; set; }
 
-        IDictionary<IGood, int> Cargo { get; set; }
+        IDictionary<IGood, int> Cargo { get; }
+
+        void SetCargo(IDictionary<IGood, int> cargo);
 
         /// <summary>
         /// Двигается по маршруту <see cref="route"/> в течение времени <see cref="TimeSpan"/>.

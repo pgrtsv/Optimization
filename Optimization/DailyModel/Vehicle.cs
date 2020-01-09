@@ -5,10 +5,12 @@ using DynamicData;
 using FluentValidation;
 using Optimization.Core;
 using Optimization.Validation;
+using ReactiveUI;
+using ReactiveUI.Fody.Helpers;
 
 namespace Optimization.DailyModel
 {
-    public class Vehicle : IVehicle
+    public class Vehicle : ReactiveObject, IVehicle
     {
         private readonly IWarehouse _warehouse;
 
@@ -21,13 +23,20 @@ namespace Optimization.DailyModel
             VehicleModel = vehicleModel;
             Position = warehouse.Coordinates;
             Cargo = new Dictionary<IGood, int>();
+            new VehicleValidator().ValidateAndThrow(this);
         }
 
         public int Id { get; }
         public VehicleModel VehicleModel { get; }
         public Coordinate Position { get; private set; }
         public IRoute Route { get; set; }
-        public IDictionary<IGood, int> Cargo { get; set; }
+        [Reactive] public IDictionary<IGood, int> Cargo { get; private set; }
+
+        public void SetCargo(IDictionary<IGood, int> cargo)
+        {
+            Cargo = cargo;
+            new VehicleValidator().ValidateAndThrow(this);
+        }
 
         private ICityRoad _currentRoad;
         private bool _isDirect;

@@ -105,7 +105,9 @@ namespace Optimization.DailyModel
                 AvailableVehicles = new VehicleGenerator().GenerateUniqueVehicles(10, _availableVehicleModels,
                         CityMap.Places.OfType<IWarehouse>().First())
                     .ToArray();
-                DailyOrders = CityMap.Places.OfType<SalePoint>().Select(x => x.GenerateOrder()).ToArray();
+                foreach (var salePoint in CityMap.Places.OfType<SalePoint>())
+                    salePoint.GenerateOrder();
+                DailyOrders = CityMap.Places.OfType<SalePoint>().Select(x => x.CurrentOrder).ToArray();
 
                 Solutions = _optimizer.Solve(AvailableVehicles, DailyOrders, CityMap, CurrentDateTime);
 
