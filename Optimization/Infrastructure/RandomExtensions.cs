@@ -56,14 +56,9 @@ namespace Optimization.Infrastructure
         /// </summary>
         public static T PeekRandomFrom<T>(this Random random, IList<T> list, IList<T> excludeList)
         {
-            while (true)
-            {
-                var randomIndex = random.Next(0, list.Count - 1);
-                var randomElement = list[randomIndex];
-                if (excludeList.Contains(randomElement))
-                    continue;
-                return randomElement;
-            }
+            list = list.Except(excludeList).ToList();
+            var randomIndex = random.Next(0, list.Count - 1);
+            return list[randomIndex];
         }
 
 
