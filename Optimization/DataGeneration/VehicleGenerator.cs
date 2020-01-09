@@ -21,7 +21,7 @@ namespace Optimization.DataGeneration
             for (int i = 0; i < count; i++)
             {
                 var vehicleModel = random.GetRandomFrom(vehicleModels, 1).First();
-                yield return new Vehicle(i, vehicleModel, $"Модель {i}", warehouse);
+                yield return new Vehicle(i, vehicleModel, warehouse);
             }
         }
     }

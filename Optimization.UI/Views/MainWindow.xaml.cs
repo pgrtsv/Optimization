@@ -49,6 +49,8 @@ namespace Optimization.UI.Views
                 this.OneWayBind(ViewModel, x => x.SimulationService.Penalty, x => x.PenaltyTextBlock.Text,
                         x => $"Штраф: {x}")
                     .DisposeWith(disposables);
+                this.OneWayBind(ViewModel, x => x.SimulationService.AvailableVehicles, x => x.LeasingDataGrid.Items)
+                    .DisposeWith(disposables);
 
             });
         }
@@ -57,7 +59,7 @@ namespace Optimization.UI.Views
         public DataGrid GoodsDataGrid => this.FindControl<DataGrid>(nameof(GoodsDataGrid));
         public DataGrid VehicleModelsDataGrid => this.FindControl<DataGrid>(nameof(VehicleModelsDataGrid));
         public ComboBox SimulationTimeComboBox => this.FindControl<ComboBox>(nameof(SimulationTimeComboBox));
-
+        public DataGrid LeasingDataGrid => this.FindControl<DataGrid>(nameof(LeasingDataGrid));
         public TextBlock SimulationDateTimeTextBlock => this.FindControl<TextBlock>(nameof(SimulationDateTimeTextBlock));
         public TextBlock ProfitTextBlock => this.FindControl<TextBlock>(nameof(ProfitTextBlock));
         public TextBlock PenaltyTextBlock => this.FindControl<TextBlock>(nameof(PenaltyTextBlock));

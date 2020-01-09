@@ -71,6 +71,19 @@
             </DataGrid.Columns>
           </DataGrid>
         </TabItem>
+        <TabItem Header="Аренда">
+          <DataGrid x:Name="LeasingDataGrid" IsReadOnly="True" AutoGenerateColumns="False">
+            <DataGrid.Columns>
+              <DataGridTextColumn Header="ID ТС" Binding="{Binding Id}" />
+              <DataGridTextColumn Header="Модель" Binding="{Binding Name}" />
+              <DataGridTextColumn Header="Вместительность, м3" Binding="{Binding Capacity}" />
+              <DataGridTextColumn Header="Время разгона, с" Binding="{Binding AccelerationTime}" />
+              <DataGridTextColumn Header="Габариты" Binding="{Binding Dimensions}" />
+              <DataGridTextColumn Header="Тип" Binding="{Binding Type}" />
+              <DataGridTextColumn Header="Цена аренды" Binding="{Binding RentalPrice}" />
+            </DataGrid.Columns>
+          </DataGrid>
+        </TabItem>
         <TabItem Header="Карта">
           <Grid>
             <Grid.ColumnDefinitions>

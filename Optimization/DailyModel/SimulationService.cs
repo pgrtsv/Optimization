@@ -88,7 +88,7 @@ namespace Optimization.DailyModel
 
         [Reactive] public DateTime CurrentDateTime { get; private set; }
 
-        [Reactive] public IReadOnlyCollection<Vehicle> AvailableVehicles { get; private set; }
+        [Reactive] public IReadOnlyCollection<Vehicle> AvailableVehicles { get; private set; } = new List<Vehicle>();
         [Reactive] public IReadOnlyCollection<IOrder> DailyOrders { get; private set; }
         [Reactive] public IReadOnlyCollection<IOptimizerSolution> Solutions { get; private set; }
 

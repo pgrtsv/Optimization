@@ -11,19 +11,13 @@ namespace Optimization.DailyModel
     {
         private readonly IWarehouse _warehouse;
 
-        public Vehicle(int id, VehicleModel vehicleModel, string name, IWarehouse warehouse)
+        public Vehicle(int id, VehicleModel vehicleModel, IWarehouse warehouse)
         {
             _warehouse = warehouse;
             VehicleModelValidator.Instance.ValidateAndThrow(vehicleModel);
 
             Id = id;
             VehicleModel = vehicleModel;
-            Name = name;
-            Capacity = VehicleModel.Capacity;
-            MaxVelocity = VehicleModel.MaxVelocity;
-            Dimensions = VehicleModel.Dimensions;
-            RentalPrice = VehicleModel.MaxVelocity;
-            Type = vehicleModel.Type;
             Position = warehouse.Coordinates;
         }
 
@@ -40,6 +34,8 @@ namespace Optimization.DailyModel
 
         public void Move(TimeSpan timeSpan)
         {
+            if (Route == null)
+                return;
             if (Position.Equals(Route.End.Coordinates))
                 return;
             if (_currentRoad == null)
@@ -76,12 +72,12 @@ namespace Optimization.DailyModel
                     distance);
         }
 
-        public string Name { get; }
-        public double Capacity { get; }
-        public double MaxVelocity { get; }
-        public (double, double, double) Dimensions { get; }
-        public VehicleType Type { get; }
-        public double RentalPrice { get; }
+        public string Name => VehicleModel.Name;
+        public double Capacity => VehicleModel.Capacity;
+        public double MaxVelocity => VehicleModel.MaxVelocity;
+        public (double, double, double) Dimensions => VehicleModel.Dimensions;
+        public VehicleType Type => VehicleModel.Type;
+        public double RentalPrice => VehicleModel.RentalPrice;
 
         public override string ToString()
         {
