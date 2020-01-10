@@ -7,7 +7,7 @@ using Xunit;
 
 namespace Optimization.Tests.Infrastructure.DijkstraAlgorithm
 {
-    public class DijkstrasResolverTests
+    public class DijkstraResolverTests
     {
 
         [Fact]
@@ -33,10 +33,12 @@ namespace Optimization.Tests.Infrastructure.DijkstraAlgorithm
             var resolver = new DijkstraResolver();
             var resolve = resolver.Resolve(cityMap, a);
 
-            var expected = new HashSet<ICityRoad> { ac, cd, de };
-            var actual = resolve.FindShortWayTo(e);
+            var expected = new Route(a, e, new [] { ac, cd, de });
+            var actual = resolve.FindShortRouteTo(e);
 
-            Assert.Equal(expected, actual);
+            Assert.Equal(expected.Start, actual.Start);
+            Assert.Equal(expected.End, actual.End);
+            Assert.Equal(expected.Roads, actual.Roads);
         }
         
     }

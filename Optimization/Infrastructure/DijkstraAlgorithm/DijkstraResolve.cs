@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.Linq;
 using Optimization.Core;
+using Optimization.DailyModel;
 
 namespace Optimization.Infrastructure.DijkstraAlgorithm
 {
@@ -25,13 +26,13 @@ namespace Optimization.Infrastructure.DijkstraAlgorithm
         /// Находит ближайший путь до указанного местоположения.
         /// </summary>
         /// <param name="cityPlace">Местоположение до которого необходимо получить ближайший путь.</param>
-        /// <returns>Путь: сет дорог до местоположения.</returns>
-        public ISet<ICityRoad> FindShortWayTo(ICityPlace cityPlace)
+        /// <returns>Путь <see cref="IRoute"/>.</returns>
+        public IRoute FindShortRouteTo(ICityPlace cityPlace)
         {
             if(!CityMap.Places.Contains(cityPlace))
                 throw new ArgumentException("Местоположение не относится к текущему городу.");
 
-            var roads = new HashSet<ICityRoad>();
+            var roads = new List<ICityRoad>();
             
             var vertex = _dijkstraVertices.GetDijkstraVertex(cityPlace);
             while (vertex.CityPlace != StartPlace)
@@ -41,7 +42,8 @@ namespace Optimization.Infrastructure.DijkstraAlgorithm
                 vertex = _dijkstraVertices.GetDijkstraVertex(vertex.PreviousCityPlace);
             }
 
-            return roads.Reverse().ToHashSet();
+            roads.Reverse();
+            return new Route(StartPlace, cityPlace, roads);
         }
     }
 }
