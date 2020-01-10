@@ -31,6 +31,10 @@ namespace Optimization.Core
 
         IDictionary<IGood, int> Cargo { get; }
 
+        double FreeCapacity { get; set; }
+
+        List<IOrder> Orders { get; set; }
+
         void SetCargo(IDictionary<IGood, int> cargo);
 
         /// <summary>
