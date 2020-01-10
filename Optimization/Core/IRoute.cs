@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Linq;
 
 namespace Optimization.Core
 {
@@ -17,7 +18,7 @@ namespace Optimization.Core
     {
         public static double Distance(this IRoute route)
         {
-            throw new NotImplementedException();
+            return route.Roads.Sum(x => x.GetDistance());
         }
     }
 }

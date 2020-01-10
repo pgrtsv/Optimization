@@ -33,9 +33,9 @@ namespace Optimization.DataGeneration
             VehicleType vehicleType = (VehicleType) _random.Next(0, 2);
             var dimension = GenerateDimensions(vehicleType);
             var capacity = GenerateCapacity(vehicleType, dimension);
-            var accelerationTime = GenerateAccelerationTime(vehicleType, dimension);
-            var price = GeneratePrice(vehicleType, capacity, accelerationTime);
-            return new VehicleModel(capacity, accelerationTime, dimension, vehicleType, price, $"Модель {id}");
+            var maxVelocity = GenerateMaxVelocity(vehicleType, dimension);
+            var price = GeneratePrice(vehicleType, capacity, maxVelocity);
+            return new VehicleModel(capacity, maxVelocity, dimension, vehicleType, price, $"Модель {id}");
         }
 
         /// <summary>
@@ -103,12 +103,11 @@ namespace Optimization.DataGeneration
         }
 
         /// <summary>
-        /// Генерирует время разгона транспорта до 100 км/ч.
+        /// Генерирует максимальную скорость ТС.
         /// </summary>
         /// <param name="vehicleType">Тип транспорта.</param>
         /// <param name="dimensions">Габариты транспорта (ДxШxВ - в метрах).</param>
-        /// <returns>Время разгона транспорта до 100 км/ч в секундах.</returns>
-        private double GenerateAccelerationTime(VehicleType vehicleType, (double, double, double) dimensions)
+        private double GenerateMaxVelocity(VehicleType vehicleType, (double, double, double) dimensions)
         {
             double accelerationTime;
             /* Далее начисляется штраф за габариты транспорта,
@@ -119,10 +118,10 @@ namespace Optimization.DataGeneration
                     accelerationTime = GenerateAndRound(14, 25);
                     break;
                 case VehicleType.SmallTruck:
-                    accelerationTime = GenerateAndRound(7, 14);
+                    accelerationTime = GenerateAndRound(25, 50);
                     break;
                 case VehicleType.Passenger:
-                    accelerationTime = GenerateAndRound(5, 9);
+                    accelerationTime = GenerateAndRound(50, 100);
                     break;
                 default:
                     throw new NotImplementedException();

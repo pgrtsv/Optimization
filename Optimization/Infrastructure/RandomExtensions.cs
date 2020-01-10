@@ -54,16 +54,15 @@ namespace Optimization.Infrastructure
         /// Возвращает случайный элемент из коллекции всех доступных элементов,
         /// исключая возможность выбора элемента входящего в список исключений.
         /// </summary>
-        public static T PeekRandomFrom<T>(this Random random, IList<T> list, IList<T> excludeList)
+        public static T GetRandomFrom<T>(this Random random, IList<T> list, IList<T> excludeList)
         {
-            while (true)
-            {
-                var randomIndex = random.Next(0, list.Count - 1);
-                var randomElement = list[randomIndex];
-                if (excludeList.Contains(randomElement))
-                    continue;
-                return randomElement;
-            }
+            list = list.Except(excludeList).ToList();
+           
+            if (list.Count == 1)
+                return list[0];
+            
+            var randomIndex = random.Next(0, list.Count - 1);
+            return list[randomIndex];
         }
 
 

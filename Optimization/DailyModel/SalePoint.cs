@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 using Optimization.Core;
 using Optimization.Infrastructure;
+using ReactiveUI.Fody.Helpers;
 
 namespace Optimization.DailyModel
 {
@@ -42,11 +43,12 @@ namespace Optimization.DailyModel
 
         public Coordinate Coordinates { get; }
         public VehicleType AcceptableVehicleTypes { get; }
+        [Reactive] public IOrder CurrentOrder { get; private set; }
 
         /// <summary>
         /// Генерирует заказ.
         /// </summary>
-        public IOrder GenerateOrder()
+        public void GenerateOrder()
         {
             var neededGoods = new Dictionary<IGood, int>();
             /* Чтобы не вызывать каждый раз LINQ для выборки уже взятых в заказ товаров. */
@@ -64,12 +66,21 @@ namespace Optimization.DailyModel
                  * границы объема заказа, то с некоторой вероятностью можем закончить генерацию. */
                 if (neededGoods.Count > 10 && remainingMaxVolume > minTotalVolume)
                     if (!_random.NextBool(220/neededGoods.Count, (int) 0.9*neededGoods.Count))
-                        return new Order(this, neededGoods);
-                
+                    {
+                        CurrentOrder = new Order(this, neededGoods);
+                        return;
+                    }
+                /* Если уже все доступные товары задействованы в заказе - возвращаем заказ. */
+                if(_goods.Count == selectedGoods.Count)
+                {
+                    CurrentOrder = new Order(this, neededGoods);
+                    return;
+                }
+
                 /* Выбираем случайный товар. */
-                var good = _random.PeekRandomFrom((IList<IGood>) _goods, selectedGoods);
+                var good = _random.GetRandomFrom((IList<IGood>) _goods, selectedGoods);
                 while(good.Volume > remainingMaxVolume)
-                    good = _random.PeekRandomFrom((IList<IGood>)_goods, selectedGoods);
+                    good = _random.GetRandomFrom((IList<IGood>)_goods, selectedGoods);
 
                 /* Генерируем количество данного товара в заказе. */
                 var countGenerationWeights = GetGoodCountGenerationWeights(good);
@@ -101,7 +112,7 @@ namespace Optimization.DailyModel
                 selectedGoods.Add(good);
             }
 
-            return new Order(this, neededGoods);
+            CurrentOrder = new Order(this, neededGoods);
         }
 
         /// <summary>

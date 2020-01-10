@@ -11,9 +11,13 @@
         VehicleType AcceptableVehicleTypes { get; }
 
         /// <summary>
+        /// Текущий заказ.
+        /// </summary>
+        IOrder CurrentOrder { get; }
+
+        /// <summary>
         /// Создаёт заказ для склада.
         /// </summary>
-        /// <returns>Заказ.</returns>
-        IOrder GenerateOrder();
+        void GenerateOrder();
     }
 }

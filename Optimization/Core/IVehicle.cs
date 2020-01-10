@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Collections.Generic;
 using Optimization.DailyModel;
 
 namespace Optimization.Core
@@ -24,10 +25,18 @@ namespace Optimization.Core
         Coordinate Position { get; }
 
         /// <summary>
+        /// Маршрут.
+        /// </summary>
+        IRoute Route { get; set; }
+
+        IDictionary<IGood, int> Cargo { get; }
+
+        void SetCargo(IDictionary<IGood, int> cargo);
+
+        /// <summary>
         /// Двигается по маршруту <see cref="route"/> в течение времени <see cref="TimeSpan"/>.
         /// </summary>
-        /// <param name="route">Маршрут.</param>
         /// <param name="timeSpan">Время движения.</param>
-        void Move(IRoute route, TimeSpan timeSpan);
+        void Move(TimeSpan timeSpan);
     }
 }

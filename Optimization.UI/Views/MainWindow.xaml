@@ -15,6 +15,51 @@
         <vm:MainWindowViewModel/>
     </Design.DataContext>
 
+    <Window.DataTemplates>
+        <DataTemplate DataType="{x:Type dailyModel:Vehicle}">
+            <StackPanel>
+                <TextBlock Text="Транспортное средство" />
+                <TextBlock Text="{Binding Id, StringFormat={}Id: {0}}" />
+                <TextBlock Text="{Binding Name, StringFormat={}Название: {0}}" />
+                <TextBlock Text="{Binding Type, StringFormat={}Тип: {0}}" />  
+                <TextBlock Text="{Binding RentalPrice, StringFormat={}Цена аренды: {0}}" />  
+                <TextBlock Text="{Binding Capacity, StringFormat={}Вместимость: {0} м3}" />
+                <TextBlock Text="{Binding MaxVelocity, StringFormat={}Макс. скорость: {0} км/ч}" />
+            </StackPanel>
+        </DataTemplate>
+        <DataTemplate DataType="{x:Type dailyModel:CityPlace}">
+            <StackPanel>
+                <TextBlock Text="Перекрёсток" />
+            </StackPanel>
+        </DataTemplate>
+        <DataTemplate DataType="{x:Type dailyModel:Warehouse}">
+            <StackPanel>
+                <TextBlock Text="Склад" />
+            </StackPanel>
+        </DataTemplate>
+        <DataTemplate DataType="{x:Type dailyModel:SalePoint}">
+            <StackPanel>
+                <TextBlock Text="Точка продаж" />
+                <TextBlock Text="Требуется:" />
+              <ItemsControl Items="{Binding CurrentOrder.NeededGoods}">
+                <ItemsControl.ItemTemplate>
+                  <DataTemplate>
+                    <TextBlock>
+                      <TextBlock.Text>
+                        <MultiBinding StringFormat="{}{0} по цене {1}: {2}">
+                          <Binding Path="Key.Name" />
+                          <Binding Path="Key.Price" />
+                          <Binding Path="Value" />
+                        </MultiBinding>
+                      </TextBlock.Text>
+                    </TextBlock>
+                  </DataTemplate>
+                </ItemsControl.ItemTemplate>
+              </ItemsControl>
+            </StackPanel>
+        </DataTemplate>
+    </Window.DataTemplates>
+
     <TabControl>
         <TabItem Header="Товары">
           <DataGrid x:Name="GoodsDataGrid"
@@ -34,16 +79,36 @@
             <DataGrid.Columns>
               <DataGridTextColumn Header="Модель" Binding="{Binding Name}" />
               <DataGridTextColumn Header="Вместительность, м3" Binding="{Binding Capacity}" />
-              <DataGridTextColumn Header="Время разгона, с" Binding="{Binding AccelerationTime}" />
-              <DataGridTextColumn Header="Габариты" Binding="{Binding Dimensions}" />
+              <DataGridTextColumn Header="Максимальная скорость, км/ч" Binding="{Binding MaxVelocity}" />
+              <DataGridTextColumn Header="Тип" Binding="{Binding Type}" />
+              <DataGridTextColumn Header="Цена аренды" Binding="{Binding RentalPrice}" />
+            </DataGrid.Columns>
+          </DataGrid>
+        </TabItem>
+        <TabItem Header="Аренда">
+          <DataGrid x:Name="LeasingDataGrid" IsReadOnly="True" AutoGenerateColumns="False">
+            <DataGrid.Columns>
+              <DataGridTextColumn Header="ID ТС" Binding="{Binding Id}" />
+              <DataGridTextColumn Header="Модель" Binding="{Binding Name}" />
+              <DataGridTextColumn Header="Вместительность, м3" Binding="{Binding Capacity}" />
+              <DataGridTextColumn Header="Максимальная скорость, км/ч" Binding="{Binding MaxVelocity}" />
               <DataGridTextColumn Header="Тип" Binding="{Binding Type}" />
               <DataGridTextColumn Header="Цена аренды" Binding="{Binding RentalPrice}" />
             </DataGrid.Columns>
           </DataGrid>
         </TabItem>
         <TabItem Header="Карта">
-          <DockPanel>
-            <Menu DockPanel.Dock="Top" Height="45">
+          <Grid>
+            <Grid.ColumnDefinitions>
+              <ColumnDefinition Width="Auto" />
+              <ColumnDefinition Width="*" />
+            </Grid.ColumnDefinitions>
+            <Grid.RowDefinitions>
+              <RowDefinition Height="Auto" />
+              <RowDefinition Height="*" />
+              <RowDefinition Height="Auto" />
+            </Grid.RowDefinitions>
+            <Menu Grid.Row="0" Grid.ColumnSpan="2" Height="45">
               <Menu.Styles>
                 <Style Selector="ComboBox ContentControl">
                   <Setter Property="Foreground" Value="{DynamicResource ForegroundAccentBrush1}" />
@@ -51,15 +116,39 @@
               </Menu.Styles>
               <ComboBox x:Name="SimulationTimeComboBox" MinWidth="100"
                         Items="{Binding AvailableSimulationTimes}"
-                        Height="40"/>
+                        Height="40" />
               <MenuItem Header="Запустить" x:Name="StartSimulationMenuItem"
                         Foreground="{DynamicResource ForegroundAccentBrush1}" />
               <MenuItem Header="Остановить" x:Name="StopSimulationMenuItem" 
                         Foreground="{DynamicResource ForegroundAccentBrush1}" />
             </Menu>
-            <TextBlock x:Name="SimulationDateTimeTextBlock" DockPanel.Dock="Bottom" />
-            <controls:Map x:Name="Map" />
-          </DockPanel>
+            <controls:Map x:Name="Map" Grid.Row="1" Grid.ColumnSpan="2" Grid.RowSpan="2" />
+            <StackPanel
+              Grid.Row="2" Grid.Column="0"
+              VerticalAlignment="Bottom">
+              <TextBlock 
+                Background="#66ffffff"
+                Foreground="#22aa22"
+                x:Name="ProfitTextBlock"/>       
+              <TextBlock 
+                Background="#66ffffff"
+                Foreground="#aa2222"
+                x:Name="PenaltyTextBlock"/>
+              <TextBlock 
+                Background="#66ffffff"
+                x:Name="SimulationDateTimeTextBlock"/>
+            </StackPanel>
+              
+            <ContentControl 
+              Grid.Row="2"
+              Grid.Column="1"
+              x:Name="AdditionalDataContentControl"
+              DockPanel.Dock="Bottom" 
+              HorizontalAlignment="Right"
+              Background="#66ffffff"
+              MinWidth="100"
+              MinHeight="100"/>
+          </Grid>
         </TabItem>
     </TabControl>
 
