@@ -54,6 +54,11 @@ namespace Optimization.Core
         RoadUsage Usage { get; }
 
         /// <summary>
+        /// Вес (в контексте представления города, как графа).
+        /// </summary>
+        double Weight { get; }
+
+        /// <summary>
         /// Генерирует ситуацию на дороге на момент времени <see cref="dateTime"/>.
         /// </summary>
         void GenerateRoadUsage(DateTime dateTime);

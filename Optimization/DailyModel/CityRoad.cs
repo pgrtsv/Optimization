@@ -21,6 +21,8 @@ namespace Optimization.DailyModel
         public RoadRank Rank { get; }
         public RoadUsage Usage { get; private set; }
 
+        public double Weight => throw new NotImplementedException();
+
         /*
         * Если ночь то все дороги пусты
         * Если рабочий день и время с 7 до 9 и с 17 до 19, то дороги на 1 более загружены
