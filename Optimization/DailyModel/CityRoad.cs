@@ -21,7 +21,23 @@ namespace Optimization.DailyModel
         public RoadRank Rank { get; }
         public RoadUsage Usage { get; private set; }
 
-        public double Weight => throw new NotImplementedException();
+        public double Weight
+        {
+            get
+            {
+                /* Вес расчитывается, как длина пути умноженая на то,
+                 * во сколько раз соответсвующее рангу дороги использование сокращает скорость. */
+                // TODO: согласовать ухудшение скорости в зависимости от ситуации на дороге и расчёт веса в зависимости от используемости дороги.
+                return Rank switch
+                {
+                    RoadRank.Low => GetDistance(),
+                    RoadRank.Medium => (GetDistance() * 2.25),
+                    RoadRank.High => (GetDistance() * 12),
+                    _ => throw new NotImplementedException(
+                        "Не предусмотрен вес для данной ситуации на дороге.")
+                };
+            }
+        }
 
         /*
         * Если ночь то все дороги пусты
