@@ -109,7 +109,7 @@ namespace Optimization.DailyModel
                     salePoint.GenerateOrder();
                 DailyOrders = CityMap.Places.OfType<SalePoint>().Select(x => x.CurrentOrder).ToArray();
 
-                Solutions = _optimizer.Solve(AvailableVehicles, DailyOrders, CityMap, CurrentDateTime);
+                Solutions = _optimizer.Solve(AvailableVehicles, DailyOrders, CurrentDateTime);
 
                 // Заносим в расходы стоимость аренды выбранных оптимизатором ТС.
                 foreach (var vehicle in Solutions.Select(x => x.Vehicle))
