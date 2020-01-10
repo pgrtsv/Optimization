@@ -30,8 +30,12 @@ namespace Optimization.Infrastructure
 
             /* Находим границы диапазона возможных чисел, относящихся к текущему весу. */
             var valueOnWeightRange = (double) (maxValue - minValue) / weights.Length;
-            var minOfRange = minValue + weightRangeIndex * valueOnWeightRange;
-            var maxOfRange = minOfRange + valueOnWeightRange;
+            var minOfRange = weightRangeIndex == 0 
+                ? minValue 
+                : minValue + weightRangeIndex * valueOnWeightRange;
+            var maxOfRange = weightRangeIndex == weights.Length - 1 
+                ? maxValue
+                : minOfRange + valueOnWeightRange;
 
             return ((int) minOfRange, (int) maxOfRange);
         }

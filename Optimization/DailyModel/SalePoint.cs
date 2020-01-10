@@ -102,7 +102,7 @@ namespace Optimization.DailyModel
                     var maxDivider = countNumberOrder == 0 ? 3 : (int)Math.Pow(10, countNumberOrder);
                     /* Подстраховка, если вдруг в результате сокращения и приведения к int – получили ноль,
                      * то сокращаем в два раза исходное количество. */
-                    var reducedCount = count / _random.Next(2, maxDivider);
+                    var reducedCount = count / _random.Next(2, maxDivider + 1);
                     count = reducedCount > 0
                         ? reducedCount : count / 2;
                 }
@@ -128,7 +128,7 @@ namespace Optimization.DailyModel
 
             /* Генерируем небольше 400 товаров. */
             if (totalMaxCount > 400)
-                totalMaxCount = _random.Next(200, 400);
+                totalMaxCount = _random.Next(200, 401);
 
             var (minCountBorder, maxCountBorder) = _random.NextIntRange(1, totalMaxCount, weights);
             var count = _random.Next(minCountBorder, maxCountBorder);

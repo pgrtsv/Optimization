@@ -45,7 +45,7 @@ namespace Optimization.Infrastructure
 
             for (int i = 0; i < count; i++)
             {
-                var randomIndex = random.Next(0, list.Count - 1);
+                var randomIndex = random.Next(0, list.Count);
                 yield return list[randomIndex];
             }
         }
@@ -61,7 +61,7 @@ namespace Optimization.Infrastructure
             if (list.Count == 1)
                 return list[0];
             
-            var randomIndex = random.Next(0, list.Count - 1);
+            var randomIndex = random.Next(0, list.Count);
             return list[randomIndex];
         }
 

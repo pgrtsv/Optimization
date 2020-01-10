@@ -30,7 +30,7 @@ namespace Optimization.DataGeneration
         /// <returns>Экземпляр <see cref="VehicleModel"/></returns>
         private VehicleModel GenerateVehicleModel(int id)
         {
-            VehicleType vehicleType = (VehicleType) _random.Next(0, 2);
+            VehicleType vehicleType = (VehicleType) _random.Next(0, 3);
             var dimension = GenerateDimensions(vehicleType);
             var capacity = GenerateCapacity(vehicleType, dimension);
             var maxVelocity = GenerateMaxVelocity(vehicleType, dimension);
@@ -153,7 +153,7 @@ namespace Optimization.DataGeneration
                     price = GenerateAndRound(6400, 8000);
                     break;
                 case VehicleType.SmallTruck:
-                    price = _random.Next(1700, 2900);
+                    price = _random.Next(1700, 2901);
                     break;
                 case VehicleType.Passenger:
                     price = GenerateAndRound(800, 2100);
