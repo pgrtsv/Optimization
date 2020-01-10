@@ -90,8 +90,8 @@ namespace Optimization.DailyModel
         public (double, double, double) Dimensions => VehicleModel.Dimensions;
         public VehicleType Type => VehicleModel.Type;
         public double RentalPrice => VehicleModel.RentalPrice;
-        public double FreeCapacity => VehicleModel.FreeCapacity;
-        public List<IOrder> Orders => VehicleModel.Orders;
+        public double FreeCapacity { get; set; }
+        public List<IOrder> Orders { get; set; }
 
         public override string ToString()
         {
