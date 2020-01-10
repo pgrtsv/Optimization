@@ -43,11 +43,20 @@ namespace Optimization.UI.Views
                 this.OneWayBind(ViewModel, x => x.SelectedObject, x => x.AdditionalDataTextBlock.Text,
                         x => x?.ToString())
                     .DisposeWith(disposables);
-                this.OneWayBind(ViewModel, x => x.SimulationService.Profit, x => x.ProfitTextBlock.Text,
-                        x => $"Доход: {x}")
+                this.WhenAnyValue(x => x.ViewModel.SimulationService.Profit,
+                        x => x.ViewModel.SimulationService.LastProfit)
+                    .Subscribe(x => ProfitTextBlock.Text = $"Доход: {x.Item1} ({x.Item2})")
                     .DisposeWith(disposables);
-                this.OneWayBind(ViewModel, x => x.SimulationService.Penalty, x => x.PenaltyTextBlock.Text,
-                        x => $"Штраф: {x}")
+                this.WhenAnyValue(x => x.ViewModel.SimulationService.Leasing,
+                        x => x.ViewModel.SimulationService.LastLeasing)
+                    .Subscribe(x => LeasingTextBlock.Text = $"Аренда: {x.Item1} ({x.Item2})")
+                    .DisposeWith(disposables);
+                this.WhenAnyValue(x => x.ViewModel.SimulationService.Penalty,
+                        x => x.ViewModel.SimulationService.LastPenalty)
+                    .Subscribe(x => PenaltyTextBlock.Text = $"Штраф: {x.Item1} ({x.Item2})")
+                    .DisposeWith(disposables);
+                this.OneWayBind(ViewModel, x => x.SimulationService.Result, x => x.ResultTextBlock.Text,
+                        x => $"Результат: {x}")
                     .DisposeWith(disposables);
                 this.OneWayBind(ViewModel, x => x.SimulationService.AvailableVehicles, x => x.LeasingDataGrid.Items)
                     .DisposeWith(disposables);
@@ -62,7 +71,9 @@ namespace Optimization.UI.Views
         public DataGrid LeasingDataGrid => this.FindControl<DataGrid>(nameof(LeasingDataGrid));
         public TextBlock SimulationDateTimeTextBlock => this.FindControl<TextBlock>(nameof(SimulationDateTimeTextBlock));
         public TextBlock ProfitTextBlock => this.FindControl<TextBlock>(nameof(ProfitTextBlock));
+        public TextBlock LeasingTextBlock => this.FindControl<TextBlock>(nameof(LeasingTextBlock));
         public TextBlock PenaltyTextBlock => this.FindControl<TextBlock>(nameof(PenaltyTextBlock));
+        public TextBlock ResultTextBlock => this.FindControl<TextBlock>(nameof(ResultTextBlock));
         public MenuItem StartSimulationMenuItem => this.FindControl<MenuItem>(nameof(StartSimulationMenuItem));
         public MenuItem StopSimulationMenuItem => this.FindControl<MenuItem>(nameof(StopSimulationMenuItem));
 

@@ -23,6 +23,7 @@ namespace Optimization.DailyModel
             VehicleModel = vehicleModel;
             Position = warehouse.Coordinates;
             Cargo = new Dictionary<IGood, int>();
+            FreeCapacity = vehicleModel.Capacity;
             new VehicleValidator().ValidateAndThrow(this);
         }
 
@@ -63,7 +64,7 @@ namespace Optimization.DailyModel
                     RoadUsage.Medium => _random.Next(20, 60) / 100.0 * MaxVelocity,
                     RoadUsage.Low => _random.Next(80, 100) / 100.0 * MaxVelocity
                 };
-            var distance = velocity / 60; // расстояние, которое проедет авто за данное время на текущей дороге с полученной средней скоростью.
+            var distance = velocity * 5 / 60; // расстояние, которое проедет авто за данное время на текущей дороге с полученной средней скоростью.
             var currentRoadEnd = _isDirect ? _currentRoad.SecondPlace.Coordinates : _currentRoad.FirstPlace.Coordinates;
             var distanceToRoadEnd = Position.DistanceTo(currentRoadEnd);
             if (distanceToRoadEnd <= distance)
@@ -90,8 +91,8 @@ namespace Optimization.DailyModel
         public (double, double, double) Dimensions => VehicleModel.Dimensions;
         public VehicleType Type => VehicleModel.Type;
         public double RentalPrice => VehicleModel.RentalPrice;
-        public double FreeCapacity => VehicleModel.FreeCapacity;
-        public List<IOrder> Orders => VehicleModel.Orders;
+        public double FreeCapacity { get; set; }
+        public List<IOrder> Orders { get; } = new List<IOrder>();
 
         public override string ToString()
         {

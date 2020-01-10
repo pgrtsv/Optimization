@@ -10,13 +10,11 @@ namespace Optimization.DailyModel
             VehicleType type, double rentalPrice, string name)
         {
             Capacity = capacity;
-            FreeCapacity = capacity;
             MaxVelocity = accelerationTime;
             Dimensions = dimensions;
             Type = type;
             RentalPrice = rentalPrice;
             Name = name;
-            Orders = new List<IOrder>();
             VehicleModelValidator.Instance.ValidateAndThrow(this);
         }
 
@@ -27,8 +25,5 @@ namespace Optimization.DailyModel
         public VehicleType Type { get; }
         public double RentalPrice { get; }
         public override string ToString() => Name;
-        public double FreeCapacity { get; set; }
-
-        public List<IOrder> Orders { get; set; }
     }
 }

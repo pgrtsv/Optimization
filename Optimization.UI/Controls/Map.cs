@@ -70,7 +70,9 @@ namespace Optimization.UI.Controls
                         .ObserveOn(RxApp.MainThreadScheduler)
                         .Subscribe(_ =>
                         {
-                            foreach (var vehicleView in Children.OfType<Button>().Where(x => x.DataContext is IVehicle))
+                            foreach (var vehicleView in Children.OfType<Button>()
+                                .Where(x => x.DataContext is IVehicle)
+                                .ToArray())
                                 Children.Remove(vehicleView);
 
                             foreach (var vehicle in SimulationService.Solutions.Select(x => x.Vehicle))
@@ -109,8 +111,8 @@ namespace Optimization.UI.Controls
             if (SimulationService == null) return;
             foreach (var vehicleView in Children.OfType<Button>().Where(x => x.DataContext is IVehicle))
             {
-                SetTop(vehicleView, ((IVehicle)DataContext).Position.Y);
-                SetLeft(vehicleView, ((IVehicle)DataContext).Position.X);
+                SetTop(vehicleView, ((IVehicle)vehicleView.DataContext).Position.Y);
+                SetLeft(vehicleView, ((IVehicle)vehicleView.DataContext).Position.X);
             }
         }
 
@@ -119,15 +121,15 @@ namespace Optimization.UI.Controls
         {
             var ellipse = new Button
             {
-                Width = 10, Height = 10, ZIndex = 2,
+                Width = 20, Height = 20, ZIndex = 2,
                 DataContext = cityPlace,
                 Command = _selectObjectCommand,
                 CommandParameter = cityPlace,
                 Background = GetBrushForPlace(cityPlace),
                 BorderBrush = GetBrushForPlace(cityPlace),
             };
-            SetLeft(ellipse, cityPlace.Coordinates.X - 5);
-            SetTop(ellipse, cityPlace.Coordinates.Y - 5);
+            SetLeft(ellipse, cityPlace.Coordinates.X - 10);
+            SetTop(ellipse, cityPlace.Coordinates.Y - 10);
             return ellipse;
         }
 
@@ -145,14 +147,13 @@ namespace Optimization.UI.Controls
         {
             var button = new Button
             {
-                Width = 20,
-                Height = 20,
+                Content = vehicle.Id.ToString(),
                 ZIndex = 3,
                 Background = GetBrushForVehicle(vehicle),
                 DataContext = vehicle,
                 Command = _selectObjectCommand,
                 CommandParameter = vehicle,
-                BorderBrush = GetBrushForVehicle(vehicle)
+                BorderBrush = Brushes.Black
             };
             SetTop(button, vehicle.Position.Y);
             SetLeft(button, vehicle.Position.X);
@@ -164,7 +165,7 @@ namespace Optimization.UI.Controls
             return vehicle.VehicleModel.Type switch
                 {
                 VehicleType.BigTruck => Brushes.Khaki,
-                VehicleType.SmallTruck => Brushes.Lavender,
+                VehicleType.SmallTruck => Brushes.Aquamarine,
                 VehicleType.Passenger => Brushes.Goldenrod,
                 };
         }

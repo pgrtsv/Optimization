@@ -33,7 +33,7 @@ namespace Optimization.Core
 
         double FreeCapacity { get; set; }
 
-        List<IOrder> Orders { get; set; }
+        List<IOrder> Orders { get; }
 
         void SetCargo(IDictionary<IGood, int> cargo);
 

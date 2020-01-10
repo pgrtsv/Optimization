@@ -24,7 +24,24 @@
                 <TextBlock Text="{Binding Type, StringFormat={}Тип: {0}}" />  
                 <TextBlock Text="{Binding RentalPrice, StringFormat={}Цена аренды: {0}}" />  
                 <TextBlock Text="{Binding Capacity, StringFormat={}Вместимость: {0} м3}" />
+                <TextBlock Text="{Binding FreeCapacity, StringFormat={}Осталось места: {0} м3}" />
                 <TextBlock Text="{Binding MaxVelocity, StringFormat={}Макс. скорость: {0} км/ч}" />
+                <TextBlock Text="Груз:" />
+              <ItemsControl Items="{Binding Cargo}">
+                <ItemsControl.ItemTemplate>
+                  <DataTemplate>
+                    <TextBlock FontSize="12">
+                      <TextBlock.Text>
+                        <MultiBinding StringFormat="{}{0} по цене {1}: {2}">
+                          <Binding Path="Key.Name" />
+                          <Binding Path="Key.Price" />
+                          <Binding Path="Value" />
+                        </MultiBinding>
+                      </TextBlock.Text>
+                    </TextBlock>
+                  </DataTemplate>
+                </ItemsControl.ItemTemplate>
+              </ItemsControl>
             </StackPanel>
         </DataTemplate>
         <DataTemplate DataType="{x:Type dailyModel:CityPlace}">
@@ -44,7 +61,7 @@
               <ItemsControl Items="{Binding CurrentOrder.NeededGoods}">
                 <ItemsControl.ItemTemplate>
                   <DataTemplate>
-                    <TextBlock>
+                    <TextBlock FontSize="12">
                       <TextBlock.Text>
                         <MultiBinding StringFormat="{}{0} по цене {1}: {2}">
                           <Binding Path="Key.Name" />
@@ -129,25 +146,32 @@
               <TextBlock 
                 Background="#66ffffff"
                 Foreground="#22aa22"
-                x:Name="ProfitTextBlock"/>       
+                x:Name="ProfitTextBlock"/>
+              <TextBlock
+                Background="#66ffffff"
+                Foreground="#aa2222"
+                x:Name="LeasingTextBlock"/>
               <TextBlock 
                 Background="#66ffffff"
                 Foreground="#aa2222"
                 x:Name="PenaltyTextBlock"/>
+              <TextBlock
+               Background="#66ffffff"
+               x:Name="ResultTextBlock"/>
               <TextBlock 
                 Background="#66ffffff"
                 x:Name="SimulationDateTimeTextBlock"/>
             </StackPanel>
-              
-            <ContentControl 
-              Grid.Row="2"
-              Grid.Column="1"
-              x:Name="AdditionalDataContentControl"
-              DockPanel.Dock="Bottom" 
-              HorizontalAlignment="Right"
-              Background="#66ffffff"
-              MinWidth="100"
-              MinHeight="100"/>
+              <ContentControl
+                x:Name="AdditionalDataContentControl"
+                Grid.Row="2"
+                Grid.Column="1"
+                DockPanel.Dock="Bottom"
+                HorizontalAlignment="Right"
+                Background="#66ffffff"
+                MinWidth="100"
+                MinHeight="100"/>
+
           </Grid>
         </TabItem>
     </TabControl>
