@@ -33,7 +33,7 @@ namespace Optimization.UI.ViewModels
             CityMap = new CityMapGenerator().Generate(Goods);
             VehicleModels = new ObservableCollection<VehicleModel>(new VehicleModelGenerator().GenerateUniqueVehicleModels(20));
             Vehicles = new ObservableCollection<Vehicle>(new VehicleGenerator().GenerateUniqueVehicles(50, VehicleModels, CityMap.Places.OfType<IWarehouse>().First()));
-            SimulationService = new SimulationService(CityMap, VehicleModels, new Optimizer());
+            SimulationService = new SimulationService(CityMap, VehicleModels, new Optimizer(CityMap));
             var canStartSimulation = SimulationService.WhenAnyValue(x => x.IsRunning)
                 .ObserveOn(RxApp.MainThreadScheduler)
                 .Select(x => !x);
