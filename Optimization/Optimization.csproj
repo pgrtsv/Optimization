@@ -7,7 +7,7 @@
   <ItemGroup>
     <PackageReference Include="DynamicData" Version="6.14.1" />
     <PackageReference Include="FluentValidation" Version="8.6.0" />
-    <PackageReference Include="Newtonsoft.Json" Version="12.0.3" />
+    <PackageReference Include="Newtonsoft.Json" Version="13.0.2" />
     <PackageReference Include="reactiveui" Version="11.0.1" />
     <PackageReference Include="ReactiveUI.Fody" Version="11.0.1" />
   </ItemGroup>
